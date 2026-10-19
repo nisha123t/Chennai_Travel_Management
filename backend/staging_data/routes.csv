@@ -1,0 +1,135 @@
+route_id,transport_type,route_name,source_stop,destination_stop,fare_inr,source_url,data_date,status
+R06,metro,Metro Blue Line Wimco Nagar Depot - Airport,S075,S058,50,https://chennaimetrorail.org/,2024-03,official_schedule
+R25,metro,Metro Blue Line Airport - Wimco Nagar Depot,S058,S075,50,https://chennaimetrorail.org/,2024-03,official_schedule
+R07,metro,Metro Green Line Central - St. Thomas Mount,S014,S055,40,https://chennaimetrorail.org/,2024-03,official_schedule
+R26,metro,Metro Green Line St. Thomas Mount - Central,S055,S014,40,https://chennaimetrorail.org/,2024-03,official_schedule
+R17,metro,Metro Phase 2 Vadapalani - Porur Junction,S037,S038,30,https://chennaimetrorail.org/,2024-03,official_schedule
+R27,metro,Metro Phase 2 Porur Junction - Vadapalani,S038,S037,30,https://chennaimetrorail.org/,2024-03,official_schedule
+R13,rail,Suburban Rail South Line Beach - Chengalpattu,S003,S090,30,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R28,rail,Suburban Rail South Line Chengalpattu - Beach,S090,S003,30,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R14,rail,Suburban Rail North Line Central - Gummidipoondi,S014,S098,30,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R29,rail,Suburban Rail North Line Gummidipoondi - Central,S098,S014,30,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R15,rail,Suburban Rail West Line Central - Tiruvallur,S014,S110,30,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R30,rail,Suburban Rail West Line Tiruvallur - Central,S110,S014,30,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R16,rail,MRTS Beach - Velachery,S003,S067,15,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R31,rail,MRTS Velachery - Beach,S067,S003,15,https://sr.indianrailways.gov.in/,2024-03,official_schedule
+R01,bus,MTC 18A Broadway - Tambaram,S001,S062,18,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R32,bus,MTC 18A Tambaram - Broadway,S062,S001,18,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R02,bus,MTC 21G Broadway - Kilambakkam KCBT,S001,S065,21,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R33,bus,MTC 21G Kilambakkam KCBT - Broadway,S065,S001,21,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R03,bus,MTC 1A Tiruvottiyur - Thiruvanmiyur,S140,S070,16,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R34,bus,MTC 1A Thiruvanmiyur - Tiruvottiyur,S070,S140,16,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R04,bus,MTC 570 CMBT - Siruseri IT Park,S034,S129,19,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R35,bus,MTC 570 Siruseri IT Park - CMBT,S129,S034,19,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R05,bus,MTC 102 Broadway - Kelambakkam,S001,S130,21,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R36,bus,MTC 102 Kelambakkam - Broadway,S130,S001,21,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R37,bus,MTC 23C Perambur - Besant Nagar,S012,S124,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R38,bus,MTC 23C Besant Nagar - Perambur,S124,S012,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R39,bus,MTC 29C Perambur - Besant Nagar via Central,S012,S124,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R40,bus,MTC 29C Besant Nagar - Perambur via Central,S124,S012,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R41,bus,MTC 47A Villivakkam - Thiruvanmiyur,S013,S070,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R42,bus,MTC 47A Thiruvanmiyur - Villivakkam,S070,S013,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R43,bus,MTC 54 Broadway - Poonamallee,S001,S132,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R44,bus,MTC 54 Poonamallee - Broadway,S132,S001,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R45,bus,MTC 70A CMBT - Tambaram,S034,S062,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R46,bus,MTC 70A Tambaram - CMBT,S062,S034,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R47,bus,MTC 119 Guindy - Sholinganallur,S049,S074,14,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R48,bus,MTC 119 Sholinganallur - Guindy,S074,S049,14,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R49,bus,MTC 27B CMBT - Anna Square,S034,S138,11,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R50,bus,MTC 27B Anna Square - CMBT,S138,S034,11,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R51,bus,MTC 114 Red Hills - CMBT,S119,S034,14,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R52,bus,MTC 114 CMBT - Red Hills,S034,S119,14,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R53,bus,MTC M1 Kilambakkam - Thiruvanmiyur,S065,S070,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R54,bus,MTC M1 Thiruvanmiyur - Kilambakkam,S070,S065,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R55,bus,MTC 88A Broadway - Kundrathur,S001,S137,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R56,bus,MTC 88A Kundrathur - Broadway,S137,S001,17,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R57,bus,MTC 64K Madhavaram MIBT - Broadway,S118,S001,12,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R58,bus,MTC 64K Broadway - Madhavaram MIBT,S001,S118,12,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R59,bus,MTC 41D Ambattur OT - Central,S134,S014,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R60,bus,MTC 41D Central - Ambattur OT,S014,S134,15,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R133,bus,MTC 56A Broadway - Manali,S001,S121,12,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R134,bus,MTC 56A Manali - Broadway,S121,S001,12,https://mtcbus.tn.gov.in/,2024-03,official_schedule
+R11,walk,Walk Central - Egmore,S014,S025,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R61,walk,Walk Egmore - Central,S025,S014,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R12,walk,Walk Nandanam - T. Nagar,S023,S042,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R62,walk,Walk T. Nagar - Nandanam,S042,S023,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R18,walk,Walk Velachery Bus - Velachery MRTS,S066,S067,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R63,walk,Walk Velachery MRTS - Velachery Bus,S067,S066,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R19,walk,Walk Koyambedu CMBT - Koyambedu Metro,S034,S035,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R64,walk,Walk Koyambedu Metro - Koyambedu CMBT,S035,S034,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R20,walk,Walk Marina Beach - Light House,S044,S045,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R65,walk,Walk Light House - Marina Beach,S045,S044,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R21,walk,Walk Chennai Beach - Broadway,S003,S001,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R66,walk,Walk Broadway - Chennai Beach,S001,S003,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R67,walk,Walk Chennai Central - Moore Market,S014,S015,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R68,walk,Walk Moore Market - Chennai Central,S015,S014,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R69,walk,Walk Park Station - Park Town MRTS,S016,S111,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R70,walk,Walk Park Town MRTS - Park Station,S111,S016,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R71,walk,Walk Chennai Fort Rail - Fort Bus,S017,S081,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R72,walk,Walk Fort Bus - Chennai Fort Rail,S081,S017,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R73,walk,Walk Airport Metro - Tirusulam Rail,S058,S083,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R74,walk,Walk Tirusulam Rail - Airport Metro,S083,S058,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R75,walk,Walk Guindy Metro - Guindy Bus Stand,S049,S050,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R76,walk,Walk Guindy Bus Stand - Guindy Metro,S050,S049,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R77,walk,Walk Vadapalani Metro - Vadapalani Bus,S037,S036,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R78,walk,Walk Vadapalani Bus - Vadapalani Metro,S036,S037,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R79,walk,Walk Washermanpet Metro - Washermanpet Rail,S006,S004,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R80,walk,Walk Washermanpet Rail - Washermanpet Metro,S004,S006,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R81,walk,Walk Tiruvottiyur Metro - Tiruvottiyur Bus Stand,S009,S140,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R82,walk,Walk Tiruvottiyur Bus Stand - Tiruvottiyur Metro,S140,S009,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R83,walk,Walk Tollgate Metro - Tollgate Bus Stand,S078,S139,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R84,walk,Walk Tollgate Bus Stand - Tollgate Metro,S139,S078,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R85,walk,Walk Thirumayilai MRTS - Mylapore Bus,S046,S114,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R86,walk,Walk Mylapore Bus - Thirumayilai MRTS,S114,S046,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R87,walk,Walk Thiruvanmiyur MRTS - Thiruvanmiyur Bus Stand,S070,S071,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R88,walk,Walk Thiruvanmiyur Bus Stand - Thiruvanmiyur MRTS,S071,S070,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R89,walk,Walk Perungudi MRTS - SRP Tools,S069,S126,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R90,walk,Walk SRP Tools - Perungudi MRTS,S126,S069,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R91,walk,Walk Tambaram Rail - Tambaram East Bus,S062,S135,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R92,walk,Walk Tambaram East Bus - Tambaram Rail,S135,S062,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R93,walk,Walk Vandalur Rail - Vandalur Zoo,S064,S136,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R94,walk,Walk Vandalur Zoo - Vandalur Rail,S136,S064,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R95,walk,Walk Ambattur Rail - Ambattur OT Bus,S103,S134,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R96,walk,Walk Ambattur OT Bus - Ambattur Rail,S134,S103,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R97,walk,Walk Avadi Rail - Avadi Bus,S106,S107,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R98,walk,Walk Avadi Bus - Avadi Rail,S107,S106,0,https://openstreetmap.org,2024-03,pedestrian_transfer
+R08,auto,Auto Guindy - Velachery,S049,S066,84,https://openstreetmap.org,2024-03,formula_derived_auto
+R99,auto,Auto Velachery - Guindy,S066,S049,84,https://openstreetmap.org,2024-03,formula_derived_auto
+R22,auto,Auto T. Nagar - Adyar,S042,S073,112,https://openstreetmap.org,2024-03,formula_derived_auto
+R100,auto,Auto Adyar - T. Nagar,S073,S042,112,https://openstreetmap.org,2024-03,formula_derived_auto
+R23,auto,Auto Adyar - Thiruvanmiyur,S073,S070,54,https://openstreetmap.org,2024-03,formula_derived_auto
+R101,auto,Auto Thiruvanmiyur - Adyar,S070,S073,54,https://openstreetmap.org,2024-03,formula_derived_auto
+R102,auto,Auto Vadapalani - Kodambakkam,S037,S040,44,https://openstreetmap.org,2024-03,formula_derived_auto
+R103,auto,Auto Kodambakkam - Vadapalani,S040,S037,44,https://openstreetmap.org,2024-03,formula_derived_auto
+R104,auto,Auto Mambalam - T. Nagar,S041,S042,40,https://openstreetmap.org,2024-03,formula_derived_auto
+R105,auto,Auto T. Nagar - Mambalam,S042,S041,40,https://openstreetmap.org,2024-03,formula_derived_auto
+R106,auto,Auto Anna Nagar Tower - Villivakkam,S032,S013,66,https://openstreetmap.org,2024-03,formula_derived_auto
+R107,auto,Auto Villivakkam - Anna Nagar Tower,S013,S032,66,https://openstreetmap.org,2024-03,formula_derived_auto
+R108,auto,Auto Royapettah - Light House,S048,S045,60,https://openstreetmap.org,2024-03,formula_derived_auto
+R109,auto,Auto Light House - Royapettah,S045,S048,60,https://openstreetmap.org,2024-03,formula_derived_auto
+R110,auto,Auto Porur Junction - Vadapalani,S038,S037,147,https://openstreetmap.org,2024-03,formula_derived_auto
+R111,auto,Auto Vadapalani - Porur Junction,S037,S038,147,https://openstreetmap.org,2024-03,formula_derived_auto
+R112,auto,Auto Poonamallee - Porur Junction,S132,S038,121,https://openstreetmap.org,2024-03,formula_derived_auto
+R113,auto,Auto Porur Junction - Poonamallee,S038,S132,121,https://openstreetmap.org,2024-03,formula_derived_auto
+R114,auto,Auto Kilambakkam KCBT - Vandalur Zoo,S065,S136,42,https://openstreetmap.org,2024-03,formula_derived_auto
+R115,auto,Auto Vandalur Zoo - Kilambakkam KCBT,S136,S065,42,https://openstreetmap.org,2024-03,formula_derived_auto
+R116,auto,Auto Sholinganallur - Medavakkam,S074,S131,105,https://openstreetmap.org,2024-03,formula_derived_auto
+R117,auto,Auto Medavakkam - Sholinganallur,S131,S074,105,https://openstreetmap.org,2024-03,formula_derived_auto
+R09,cab,Cab Tambaram - Chennai Central,S062,S014,710,https://openstreetmap.org,2024-03,formula_derived_cab
+R118,cab,Cab Chennai Central - Tambaram,S014,S062,710,https://openstreetmap.org,2024-03,formula_derived_cab
+R10,cab,Cab Airport - Chennai Central,S058,S014,474,https://openstreetmap.org,2024-03,formula_derived_cab
+R119,cab,Cab Chennai Central - Airport,S014,S058,474,https://openstreetmap.org,2024-03,formula_derived_cab
+R24,cab,Cab Guindy - Sholinganallur,S049,S074,402,https://openstreetmap.org,2024-03,formula_derived_cab
+R120,cab,Cab Sholinganallur - Guindy,S074,S049,402,https://openstreetmap.org,2024-03,formula_derived_cab
+R121,cab,Cab CMBT - Chennai Airport,S034,S058,328,https://openstreetmap.org,2024-03,formula_derived_cab
+R122,cab,Cab Chennai Airport - CMBT,S058,S034,328,https://openstreetmap.org,2024-03,formula_derived_cab
+R123,cab,Cab Kilambakkam KCBT - Chennai Central,S065,S014,888,https://openstreetmap.org,2024-03,formula_derived_cab
+R124,cab,Cab Chennai Central - Kilambakkam KCBT,S014,S065,888,https://openstreetmap.org,2024-03,formula_derived_cab
+R125,cab,Cab Siruseri IT Park - Tambaram,S129,S062,494,https://openstreetmap.org,2024-03,formula_derived_cab
+R126,cab,Cab Tambaram - Siruseri IT Park,S062,S129,494,https://openstreetmap.org,2024-03,formula_derived_cab
+R127,cab,Cab Red Hills - Chennai Central,S119,S014,483,https://openstreetmap.org,2024-03,formula_derived_cab
+R128,cab,Cab Chennai Central - Red Hills,S014,S119,483,https://openstreetmap.org,2024-03,formula_derived_cab
+R129,cab,Cab Poonamallee - Chennai Central,S132,S014,552,https://openstreetmap.org,2024-03,formula_derived_cab
+R130,cab,Cab Chennai Central - Poonamallee,S014,S132,552,https://openstreetmap.org,2024-03,formula_derived_cab
+R131,cab,Cab Ennore - Broadway,S092,S001,485,https://openstreetmap.org,2024-03,formula_derived_cab
+R132,cab,Cab Broadway - Ennore,S001,S092,485,https://openstreetmap.org,2024-03,formula_derived_cab

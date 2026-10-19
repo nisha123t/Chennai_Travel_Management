@@ -1,0 +1,141 @@
+stop_id,stop_name,area,region,latitude,longitude,stop_type,modes,interchange,name_status,coord_status,source_url,data_date
+S001,Broadway,George Town,North Chennai,13.0874,80.2838,bus_stop,bus;metro,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S002,Mannadi,George Town,North Chennai,13.095,80.2845,metro_station,metro,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S003,Chennai Beach,George Town,North Chennai,13.0922,80.2919,suburban_station,suburban_rail;mrts,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S004,Royapuram,Royapuram,North Chennai,13.1046,80.2954,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S005,Basin Bridge,Basin Bridge,North Chennai,13.0975,80.2765,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S006,Washermanpet,Washermanpet,North Chennai,13.107,80.283,metro_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S007,Tondiarpet,Tondiarpet,North Chennai,13.1255,80.2894,metro_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S008,Korukkupet,Korukkupet,North Chennai,13.1186,80.278,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S009,Tiruvottiyur,Tiruvottiyur,North Chennai,13.159,80.3,metro_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S010,Wimco Nagar,Wimco Nagar,North Chennai,13.183,80.307,metro_station,metro;suburban_rail,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S011,Vyasarpadi Jeeva,Vyasarpadi,North Chennai,13.1135,80.257,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S012,Perambur,Perambur,North Chennai,13.119,80.242,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S013,Villivakkam,Villivakkam,North Chennai,13.109,80.2085,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S014,Chennai Central,Park Town,Central Chennai,13.0825,80.275,suburban_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S015,Moore Market Complex,Park Town,Central Chennai,13.084,80.2735,suburban_station,suburban_rail,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S016,Chennai Park,Park Town,Central Chennai,13.0775,80.27,suburban_station,suburban_rail,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S017,Chennai Fort,Fort,Central Chennai,13.0795,80.2865,suburban_station,suburban_rail;mrts,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S018,Government Estate,Mount Road,Central Chennai,13.0696,80.2723,metro_station,metro,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S019,LIC,Mount Road,Central Chennai,13.0655,80.2672,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S020,Thousand Lights,Thousand Lights,Central Chennai,13.0585,80.257,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S021,AG-DMS,Teynampet,Central Chennai,13.048,80.251,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S022,Teynampet,Teynampet,Central Chennai,13.0407,80.248,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S023,Nandanam,Nandanam,Central Chennai,13.0314,80.2394,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S024,Saidapet,Saidapet,Central Chennai,13.0222,80.224,metro_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S025,Egmore,Egmore,Central Chennai,13.078,80.2616,metro_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S026,Chetpet,Chetpet,Central Chennai,13.0742,80.2431,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S027,Nehru Park,Chetpet,Central Chennai,13.078,80.253,metro_station,metro,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S028,Kilpauk,Kilpauk,Central Chennai,13.0805,80.244,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S029,Pachaiyappa's College,Kilpauk,Central Chennai,13.079,80.235,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S030,Shenoy Nagar,Shenoy Nagar,Central Chennai,13.08,80.226,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S031,Anna Nagar East,Anna Nagar,Central Chennai,13.0845,80.2185,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S032,Anna Nagar Tower,Anna Nagar,Central Chennai,13.0855,80.21,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S033,Thirumangalam,Thirumangalam,Central Chennai,13.085,80.2015,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S034,Koyambedu (CMBT),Koyambedu,Central Chennai,13.0695,80.2043,bus_stop,bus;metro,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S035,Koyambedu Metro,Koyambedu,Central Chennai,13.072,80.1955,metro_station,metro,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S036,Arumbakkam,Arumbakkam,Central Chennai,13.063,80.21,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S037,Vadapalani,Vadapalani,Central Chennai,13.0505,80.2121,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S038,Porur Junction,Porur,West Chennai,13.0359,80.1568,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S039,Ashok Nagar,Ashok Nagar,Central Chennai,13.0372,80.212,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S040,Kodambakkam,Kodambakkam,Central Chennai,13.0508,80.227,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S041,Mambalam,Mambalam,Central Chennai,13.0382,80.2217,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S042,T. Nagar,T. Nagar,Central Chennai,13.0418,80.2341,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S043,Nungambakkam,Nungambakkam,Central Chennai,13.059,80.243,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S044,Marina Beach,Marina,Central Chennai,13.05,80.2824,landmark,bus;mrts,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S045,Light House,Marina,Central Chennai,13.0395,80.2795,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S046,Thirumayilai (Mylapore),Mylapore,Central Chennai,13.0338,80.2688,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S047,Mandaveli,Mandaveli,Central Chennai,13.0267,80.2625,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S048,Royapettah,Royapettah,Central Chennai,13.0538,80.264,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S049,Guindy,Guindy,South Chennai,13.0086,80.2131,metro_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S050,Little Mount,Little Mount,South Chennai,13.0135,80.2215,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S051,Anna University,Guindy,South Chennai,13.0108,80.236,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S052,Madhya Kailash,Adyar,South Chennai,13.0,80.2475,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S053,Alandur,Alandur,South Chennai,13.0045,80.2015,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S054,Ekkattuthangal,Ekkattuthangal,South Chennai,13.019,80.205,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S055,St. Thomas Mount,St. Thomas Mount,South Chennai,12.9955,80.1985,metro_station,metro;suburban_rail;mrts;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S056,Pazhavanthangal,Pazhavanthangal,South Chennai,12.9937,80.193,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S057,Meenambakkam,Meenambakkam,South Chennai,12.9906,80.1881,suburban_station,suburban_rail;metro,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S058,Chennai Airport,Tirusulam,South Chennai,12.9941,80.1709,metro_station,metro;suburban_rail;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S059,Pallavaram,Pallavaram,South Chennai,12.9672,80.1519,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S060,Chromepet,Chromepet,South Chennai,12.9508,80.1406,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S061,Tambaram Sanatorium,Tambaram,South Chennai,12.9385,80.1245,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S062,Tambaram,Tambaram,South Chennai,12.926,80.117,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S063,Perungalathur,Perungalathur,South Chennai,12.904,80.093,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S064,Vandalur,Vandalur,South Chennai,12.8924,80.0816,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S065,Kilambakkam Bus Terminus,Kilambakkam,South Chennai,12.875,80.077,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S066,Velachery,Velachery,South Chennai,12.979,80.22,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S067,Velachery MRTS,Velachery,South Chennai,12.9674,80.219,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S068,Taramani,Taramani,South Chennai,12.986,80.2415,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S069,Perungudi,Perungudi,South Chennai,12.97,80.24,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S070,Thiruvanmiyur,Thiruvanmiyur,South Chennai,12.9894,80.2514,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S071,Indira Nagar,Adyar,South Chennai,12.9995,80.2545,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S072,Kotturpuram,Kotturpuram,South Chennai,13.013,80.244,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S073,Adyar,Adyar,South Chennai,13.0067,80.2576,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S074,Sholinganallur,Sholinganallur,South Chennai,12.901,80.2279,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S075,Wimco Nagar Depot,Wimco Nagar,North Chennai,13.1892,80.309,metro_station,metro,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S076,Thiruvottiyur Theradi,Tiruvottiyur,North Chennai,13.151,80.297,metro_station,metro;bus,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S077,Kaladipet,Kaladipet,North Chennai,13.1425,80.294,metro_station,metro;bus,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S078,Tollgate,Tollgate,North Chennai,13.133,80.2915,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S079,New Washermanpet,Washermanpet,North Chennai,13.123,80.288,metro_station,metro;bus,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S080,Sir Theagaraya College,Old Washermanpet,North Chennai,13.11,80.284,metro_station,metro;bus,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S081,High Court,Parry's,Central Chennai,13.088,80.2865,metro_station,metro;bus,yes,verified,verified,https://chennaimetrorail.org/,2024-03
+S082,OTA - Nanganallur Road,Nanganallur,South Chennai,12.9975,80.1925,metro_station,metro,no,verified,verified,https://chennaimetrorail.org/,2024-03
+S083,Tirusulam,Tirusulam,South Chennai,12.9866,80.1764,suburban_station,suburban_rail;metro;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S084,Urappakkam,Urapakkam,South Chennai,12.868,80.069,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S085,Guduvancheri,Guduvancheri,South Chennai,12.8465,80.057,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S086,Potheri,Potheri,South Chennai,12.8235,80.0435,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S087,Kattangulathur,Kattangulathur,South Chennai,12.816,80.038,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S088,Maraimalai Nagar,Maraimalai Nagar,South Chennai,12.798,80.024,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S089,Singaperumal Koil,Singaperumal Koil,South Chennai,12.7635,80.0035,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S090,Chengalpattu Junction,Chengalpattu,South Chennai,12.693,79.977,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S091,Kathivakkam,Kathivakkam,North Chennai,13.208,80.316,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S092,Ennore,Ennore,North Chennai,13.2205,80.3225,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S093,Athipattu Pudunagar,Athipattu,North Chennai,13.245,80.313,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S094,Athipattu,Athipattu,North Chennai,13.262,80.31,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S095,Nandiambakkam,Nandiambakkam,North Chennai,13.278,80.297,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S096,Minjur,Minjur,North Chennai,13.289,80.262,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S097,Ponneri,Ponneri,North Chennai,13.332,80.201,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S098,Gummidipoondi,Gummidipoondi,North Chennai,13.407,80.13,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S099,Perambur Carriage Works,Perambur,North Chennai,13.116,80.231,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S100,Perambur Loco Works,Perambur,North Chennai,13.113,80.223,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S101,Korattur,Korattur,West Chennai,13.112,80.183,suburban_station,suburban_rail;bus,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S102,Pattaravakkam,Pattaravakkam,West Chennai,13.114,80.168,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S103,Ambattur,Ambattur,West Chennai,13.117,80.153,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S104,Thirumullaivoyal,Thirumullaivoyal,West Chennai,13.118,80.137,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S105,Annanur,Annanur,West Chennai,13.119,80.125,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S106,Avadi,Avadi,West Chennai,13.1185,80.103,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S107,Hindu College,Pattabiram,West Chennai,13.121,80.082,suburban_station,suburban_rail,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S108,Pattabiram,Pattabiram,West Chennai,13.123,80.063,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S109,Thiruninravur,Thiruninravur,West Chennai,13.12,80.027,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S110,Tiruvallur,Tiruvallur,West Chennai,13.143,79.909,suburban_station,suburban_rail;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S111,Chintadripet,Chintadripet,Central Chennai,13.074,80.273,suburban_station,mrts;bus,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S112,Chepauk,Chepauk,Central Chennai,13.0645,80.281,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S113,Thiruvallikeni,Triplicane,Central Chennai,13.0565,80.28,suburban_station,mrts;bus,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S114,Mundagakanniamman Koil,Mylapore,Central Chennai,13.037,80.272,suburban_station,mrts,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S115,Greenways Road,R.A. Puram,Central Chennai,13.0185,80.257,suburban_station,mrts;bus,no,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S116,Kasturba Nagar,Adyar,South Chennai,13.0065,80.249,suburban_station,mrts;bus,yes,verified,verified,https://sr.indianrailways.gov.in/,2024-03
+S117,Vallalar Nagar (Mint),Mint,North Chennai,13.1025,80.278,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S118,Madhavaram MIBT,Madhavaram,North Chennai,13.155,80.218,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S119,Red Hills,Red Hills,North Chennai,13.197,80.196,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S120,Kolathur,Kolathur,North Chennai,13.125,80.215,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S121,Manali,Manali,North Chennai,13.17,80.26,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S122,Anna Nagar West Depot,Anna Nagar,Central Chennai,13.09,80.198,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S123,Aminjikarai,Aminjikarai,Central Chennai,13.0725,80.224,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S124,Besant Nagar,Besant Nagar,South Chennai,12.999,80.267,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S125,Santhome,Santhome,Central Chennai,13.033,80.277,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S126,Perungudi SRP Tools,Perungudi,South Chennai,12.97,80.248,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S127,Thoraipakkam,OMR,South Chennai,12.943,80.238,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S128,Navalur,OMR,South Chennai,12.851,80.226,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S129,Siruseri IT Park,SIPCOT,South Chennai,12.825,80.219,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S130,Kelambakkam,Kelambakkam,South Chennai,12.788,80.221,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S131,Medavakkam,Medavakkam,South Chennai,12.918,80.192,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S132,Poonamallee,Poonamallee,West Chennai,13.048,80.112,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S133,Iyyappanthangal,Iyyappanthangal,West Chennai,13.039,80.138,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S134,Ambattur OT Bus Terminus,Ambattur,West Chennai,13.123,80.15,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S135,Tambaram East Bus Stand,Tambaram,South Chennai,12.924,80.123,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S136,Vandalur Zoo,Vandalur,South Chennai,12.888,80.082,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S137,Kundrathur,Kundrathur,West Chennai,12.998,80.096,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S138,Anna Square,Marina,Central Chennai,13.064,80.283,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S139,Tollgate Bus Stand,Tollgate,North Chennai,13.1335,80.292,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S140,Thiruvottiyur Bus Stand,Tiruvottiyur,North Chennai,13.161,80.3015,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03

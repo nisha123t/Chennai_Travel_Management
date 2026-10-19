@@ -1,0 +1,25 @@
+route_id,transport_type,route_name,source_stop,destination_stop,fare_inr
+R01,bus,Sample Bus B1 Broadway-Tambaram,S001,S062,40
+R02,bus,Sample Bus B2 Kilambakkam-Marina,S065,S044,35
+R03,bus,Sample Bus B3 Tondiarpet-Adyar,S007,S073,25
+R04,bus,Sample Bus B4 Koyambedu-Sholinganallur,S034,S074,30
+R05,bus,Sample Bus B5 Royapuram-Egmore,S004,S025,15
+R06,metro,Sample Metro Blue Line Wimco Nagar-Airport,S010,S058,40
+R07,metro,Sample Metro Green Line Central-St. Thomas Mount,S014,S055,30
+R08,auto,Sample Auto Guindy-Velachery,S049,S066,120
+R09,cab,Sample Cab Tambaram-Chennai Central,S062,S014,650
+R10,cab,Sample Cab Airport-Chennai Central,S058,S014,550
+R11,walk,Sample Walk Chennai Central-Egmore,S014,S025,0
+R12,walk,Sample Walk Nandanam-T. Nagar,S023,S042,0
+R13,rail,Sample Suburban Rail Beach-Tambaram,S003,S062,20
+R14,rail,Sample Suburban Rail Central-Wimco Nagar,S014,S010,15
+R15,rail,Sample Suburban Rail Central-Villivakkam,S014,S013,10
+R16,rail,Sample MRTS Beach-Velachery,S003,S067,20
+R17,metro,Sample Metro Phase 2 Vadapalani-Porur Junction,S037,S038,15
+R18,walk,Sample Walk Velachery-Velachery MRTS,S066,S067,0
+R19,walk,Sample Walk Koyambedu CMBT-Koyambedu Metro,S034,S035,0
+R20,walk,Sample Walk Marina Beach-Light House,S044,S045,0
+R21,walk,Sample Walk Chennai Beach-Broadway,S003,S001,0
+R22,auto,Sample Auto T. Nagar-Adyar,S042,S073,122
+R23,auto,Sample Auto Adyar-Thiruvanmiyur,S073,S070,69
+R24,cab,Sample Cab Guindy-Sholinganallur,S049,S074,333

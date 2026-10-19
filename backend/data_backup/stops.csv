@@ -1,0 +1,75 @@
+stop_id,stop_name,area,region,latitude,longitude,stop_type,modes,interchange,name_status,coord_status
+S001,Broadway,George Town,North Chennai,13.0874,80.2838,bus_stop,bus;metro,yes,verified,verified
+S002,Mannadi,George Town,North Chennai,13.0950,80.2845,metro_station,metro,no,verified,approximate
+S003,Chennai Beach,George Town,North Chennai,13.0922,80.2919,suburban_station,suburban_rail;mrts,yes,verified,verified
+S004,Royapuram,Royapuram,North Chennai,13.1046,80.2954,suburban_station,suburban_rail;bus,yes,verified,approximate
+S005,Basin Bridge,Basin Bridge,North Chennai,13.0975,80.2765,suburban_station,suburban_rail,no,verified,approximate
+S006,Washermanpet,Washermanpet,North Chennai,13.1070,80.2830,metro_station,metro;suburban_rail;bus,yes,verified,approximate
+S007,Tondiarpet,Tondiarpet,North Chennai,13.1255,80.2894,metro_station,metro;suburban_rail;bus,yes,verified,approximate
+S008,Korukkupet,Korukkupet,North Chennai,13.1186,80.2780,suburban_station,suburban_rail,no,verified,verified
+S009,Tiruvottiyur,Tiruvottiyur,North Chennai,13.1590,80.3000,metro_station,metro;suburban_rail;bus,yes,verified,approximate
+S010,Wimco Nagar,Wimco Nagar,North Chennai,13.1830,80.3070,metro_station,metro;suburban_rail,yes,verified,approximate
+S011,Vyasarpadi Jeeva,Vyasarpadi,North Chennai,13.1135,80.2570,suburban_station,suburban_rail;bus,yes,verified,approximate
+S012,Perambur,Perambur,North Chennai,13.1190,80.2420,suburban_station,suburban_rail;bus,yes,verified,approximate
+S013,Villivakkam,Villivakkam,North Chennai,13.1090,80.2085,suburban_station,suburban_rail,no,verified,approximate
+S014,Chennai Central,Park Town,Central Chennai,13.0825,80.2750,suburban_station,metro;suburban_rail;bus,yes,verified,verified
+S015,Moore Market Complex,Park Town,Central Chennai,13.0840,80.2735,suburban_station,suburban_rail,no,verified,approximate
+S016,Chennai Park,Park Town,Central Chennai,13.0775,80.2700,suburban_station,suburban_rail,no,verified,approximate
+S017,Chennai Fort,Fort,Central Chennai,13.0795,80.2865,suburban_station,suburban_rail;mrts,yes,verified,approximate
+S018,Government Estate,Mount Road,Central Chennai,13.0696,80.2723,metro_station,metro,no,verified,verified
+S019,LIC,Mount Road,Central Chennai,13.0655,80.2672,metro_station,metro,no,verified,approximate
+S020,Thousand Lights,Thousand Lights,Central Chennai,13.0585,80.2570,metro_station,metro,no,verified,approximate
+S021,AG-DMS,Teynampet,Central Chennai,13.0480,80.2510,metro_station,metro,no,verified,approximate
+S022,Teynampet,Teynampet,Central Chennai,13.0407,80.2480,metro_station,metro;bus,yes,verified,approximate
+S023,Nandanam,Nandanam,Central Chennai,13.0314,80.2394,metro_station,metro;bus,yes,verified,approximate
+S024,Saidapet,Saidapet,Central Chennai,13.0222,80.2240,metro_station,metro;suburban_rail;bus,yes,verified,approximate
+S025,Egmore,Egmore,Central Chennai,13.0780,80.2616,metro_station,metro;suburban_rail;bus,yes,verified,verified
+S026,Chetpet,Chetpet,Central Chennai,13.0742,80.2431,suburban_station,suburban_rail,no,verified,verified
+S027,Nehru Park,Chetpet,Central Chennai,13.0780,80.2530,metro_station,metro,no,verified,approximate
+S028,Kilpauk,Kilpauk,Central Chennai,13.0805,80.2440,metro_station,metro,no,verified,approximate
+S029,Pachaiyappa's College,Kilpauk,Central Chennai,13.0790,80.2350,metro_station,metro,no,verified,approximate
+S030,Shenoy Nagar,Shenoy Nagar,Central Chennai,13.0800,80.2260,metro_station,metro,no,verified,approximate
+S031,Anna Nagar East,Anna Nagar,Central Chennai,13.0845,80.2185,metro_station,metro,no,verified,approximate
+S032,Anna Nagar Tower,Anna Nagar,Central Chennai,13.0855,80.2100,metro_station,metro,no,verified,approximate
+S033,Thirumangalam,Thirumangalam,Central Chennai,13.0850,80.2015,metro_station,metro,no,verified,approximate
+S034,Koyambedu (CMBT),Koyambedu,Central Chennai,13.0695,80.2043,bus_stop,bus;metro,yes,verified,approximate
+S035,Koyambedu Metro,Koyambedu,Central Chennai,13.0720,80.1955,metro_station,metro,no,verified,approximate
+S036,Arumbakkam,Arumbakkam,Central Chennai,13.0630,80.2100,metro_station,metro,no,verified,approximate
+S037,Vadapalani,Vadapalani,Central Chennai,13.0505,80.2121,metro_station,metro;bus,yes,verified,verified
+S038,Porur Junction,Porur,Central Chennai,13.0359,80.1568,metro_station,metro,no,verified,verified
+S039,Ashok Nagar,Ashok Nagar,Central Chennai,13.0372,80.2120,metro_station,metro,no,verified,approximate
+S040,Kodambakkam,Kodambakkam,Central Chennai,13.0508,80.2270,suburban_station,suburban_rail,no,verified,approximate
+S041,Mambalam,Mambalam,Central Chennai,13.0382,80.2217,suburban_station,suburban_rail,no,verified,approximate
+S042,T. Nagar,T. Nagar,Central Chennai,13.0418,80.2341,bus_stop,bus,no,listed_in_bus_routes,approximate
+S043,Nungambakkam,Nungambakkam,Central Chennai,13.0590,80.2430,suburban_station,suburban_rail,no,verified,approximate
+S044,Marina Beach,Marina,Central Chennai,13.0500,80.2824,landmark,landmark,no,landmark_known,approximate
+S045,Light House,Marina,Central Chennai,13.0395,80.2795,suburban_station,mrts,no,verified,approximate
+S046,Thirumayilai (Mylapore),Mylapore,Central Chennai,13.0338,80.2688,suburban_station,mrts;bus,yes,verified,approximate
+S047,Mandaveli,Mandaveli,Central Chennai,13.0267,80.2625,suburban_station,mrts,no,verified,approximate
+S048,Royapettah,Royapettah,Central Chennai,13.0538,80.2640,bus_stop,bus,no,listed_in_bus_routes,approximate
+S049,Guindy,Guindy,South Chennai,13.0086,80.2131,metro_station,metro;suburban_rail;bus,yes,verified,verified
+S050,Little Mount,Little Mount,South Chennai,13.0135,80.2215,metro_station,metro;bus,yes,verified,approximate
+S051,Anna University,Guindy,South Chennai,13.0108,80.2360,bus_stop,bus,no,listed_in_bus_routes,approximate
+S052,Madhya Kailash,Adyar,South Chennai,13.0000,80.2475,bus_stop,bus,no,listed_in_bus_routes,approximate
+S053,Alandur,Alandur,South Chennai,13.0045,80.2015,metro_station,metro;bus,yes,verified,approximate
+S054,Ekkattuthangal,Ekkattuthangal,South Chennai,13.0190,80.2050,metro_station,metro,no,verified,approximate
+S055,St. Thomas Mount,St. Thomas Mount,South Chennai,12.9955,80.1985,metro_station,metro;suburban_rail;mrts,yes,verified,approximate
+S056,Pazhavanthangal,Pazhavanthangal,South Chennai,12.9937,80.1930,suburban_station,suburban_rail,no,verified,approximate
+S057,Meenambakkam,Meenambakkam,South Chennai,12.9906,80.1881,suburban_station,suburban_rail;metro,yes,verified,verified
+S058,Chennai Airport,Tirusulam,South Chennai,12.9941,80.1709,metro_station,metro;suburban_rail,yes,verified,approximate
+S059,Pallavaram,Pallavaram,South Chennai,12.9672,80.1519,suburban_station,suburban_rail;bus,yes,verified,verified
+S060,Chromepet,Chromepet,South Chennai,12.9508,80.1406,suburban_station,suburban_rail;bus,yes,verified,verified
+S061,Tambaram Sanatorium,Tambaram,South Chennai,12.9385,80.1245,suburban_station,suburban_rail,no,verified,approximate
+S062,Tambaram,Tambaram,South Chennai,12.9260,80.1170,suburban_station,suburban_rail;bus,yes,verified,verified
+S063,Perungalathur,Perungalathur,South Chennai,12.9040,80.0930,suburban_station,suburban_rail;bus,yes,verified,approximate
+S064,Vandalur,Vandalur,South Chennai,12.8924,80.0816,suburban_station,suburban_rail;bus,yes,verified,approximate
+S065,Kilambakkam Bus Terminus,Kilambakkam,South Chennai,12.8750,80.0770,bus_stop,bus,no,listed_in_bus_routes,approximate
+S066,Velachery,Velachery,South Chennai,12.9790,80.2200,bus_stop,bus,no,listed_in_bus_routes,approximate
+S067,Velachery MRTS,Velachery,South Chennai,12.9674,80.2190,suburban_station,mrts,no,verified,verified
+S068,Taramani,Taramani,South Chennai,12.9860,80.2415,suburban_station,mrts,no,verified,approximate
+S069,Perungudi,Perungudi,South Chennai,12.9700,80.2400,suburban_station,mrts;bus,yes,verified,approximate
+S070,Thiruvanmiyur,Thiruvanmiyur,South Chennai,12.9894,80.2514,suburban_station,mrts;bus,yes,verified,verified
+S071,Indira Nagar,Adyar,South Chennai,12.9995,80.2545,suburban_station,mrts,no,verified,approximate
+S072,Kotturpuram,Kotturpuram,South Chennai,13.0130,80.2440,suburban_station,mrts,no,verified,approximate
+S073,Adyar,Adyar,South Chennai,13.0067,80.2576,bus_stop,bus,no,listed_in_bus_routes,approximate
+S074,Sholinganallur,Sholinganallur,South Chennai,12.9010,80.2279,bus_stop,bus,no,listed_in_bus_routes,approximate
