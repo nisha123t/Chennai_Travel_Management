@@ -1,0 +1,21 @@
+{
+  "dataset_samples": 2850,
+  "train_samples": 2280,
+  "test_samples": 570,
+  "linear_regression": {
+    "model_type": "Multiple Linear Regression",
+    "mae": 1.795,
+    "mse": 8.723,
+    "rmse": 2.954,
+    "r2_score": 0.8837
+  },
+  "random_forest": {
+    "model_type": "Random Forest Regressor",
+    "n_estimators": 100,
+    "max_depth": 12,
+    "mae": 0.767,
+    "mse": 1.289,
+    "rmse": 1.135,
+    "r2_score": 0.9828
+  }
+}
