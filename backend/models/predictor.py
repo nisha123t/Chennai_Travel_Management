@@ -139,3 +139,19 @@ def enhance_route_with_ml(
     enriched["time_of_day"] = time_of_day_bucket(hour0, day_type)
     enriched["day_type"] = day_type
     return enriched
+
+
+def predict_segments(rows: list, model_type: str = "random_forest"):
+    """
+    Batch prediction for many ride segments in one model call.
+    Each row: distance_km, transport_type, stops_count, departure_hour, day_type.
+    """
+    if not rows:
+        return []
+    model = get_model(model_type)
+    frame = pd.DataFrame([
+        _feature_row(r["distance_km"], r["transport_type"], r.get("stops_count", 1),
+                     int(r.get("departure_hour", 9)) % 24, r.get("day_type", "weekday"))
+        for r in rows
+    ])
+    return model.predict(frame)
