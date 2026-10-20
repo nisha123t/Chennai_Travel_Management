@@ -20,7 +20,7 @@ class LinearRegressionTravelTimeModel:
     transport_type, time_of_day, and day_type.
     """
 
-    NUMERIC_FEATURES = ["distance_km", "fare_inr", "stops_count"]
+    NUMERIC_FEATURES = ["distance_km", "stops_count", "departure_hour"]
     CATEGORICAL_FEATURES = ["transport_type", "time_of_day", "day_type"]
     TARGET = "travel_time_min"
 

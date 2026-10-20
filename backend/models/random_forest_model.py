@@ -20,11 +20,11 @@ class RandomForestTravelTimeModel:
     speed, transit mode, and peak traffic intervals.
     """
 
-    NUMERIC_FEATURES = ["distance_km", "fare_inr", "stops_count"]
+    NUMERIC_FEATURES = ["distance_km", "stops_count", "departure_hour"]
     CATEGORICAL_FEATURES = ["transport_type", "time_of_day", "day_type"]
     TARGET = "travel_time_min"
 
-    def __init__(self, n_estimators=100, max_depth=12, random_state=42):
+    def __init__(self, n_estimators=200, max_depth=14, random_state=42):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.random_state = random_state

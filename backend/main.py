@@ -29,8 +29,8 @@ class RouteRequest(BaseModel):
 class PredictionRequest(BaseModel):
     distance_km: float
     transport_type: str
-    fare_inr: Optional[float] = 0.0
     stops_count: Optional[int] = 1
+    departure_hour: Optional[int] = None
     time_of_day: Optional[str] = "morning_peak"
     day_type: Optional[str] = "weekday"
     model_type: Optional[str] = "random_forest"
@@ -55,6 +55,8 @@ def calculate_route(
     preference: str = "fastest",
     ml_enhanced: bool = False,
     time_of_day: str = "morning_peak",
+    departure_hour: Optional[int] = Query(None, ge=0, le=23),
+    day_type: str = "weekday",
     model: str = "random_forest"
 ):
     try:
@@ -77,7 +79,9 @@ def calculate_route(
             result = enhance_route_with_ml(
                 result,
                 model_type=model,
-                time_of_day=time_of_day
+                time_of_day=time_of_day,
+                departure_hour=departure_hour,
+                day_type=day_type
             )
         except Exception as ex:
             # Fallback gracefully to graph baseline if ML model is unavailable
@@ -93,8 +97,8 @@ def predict_time(req: PredictionRequest):
         predicted_min = predict_travel_time(
             distance_km=req.distance_km,
             transport_type=req.transport_type,
-            fare_inr=req.fare_inr,
             stops_count=req.stops_count,
+            departure_hour=req.departure_hour,
             time_of_day=req.time_of_day,
             day_type=req.day_type,
             model_type=req.model_type

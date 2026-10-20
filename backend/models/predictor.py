@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 from linear_regression_model import LinearRegressionTravelTimeModel
 from random_forest_model import RandomForestTravelTimeModel
+from dataset_builder import BUCKET_TO_HOUR, time_of_day_bucket
 
 SAVED_MODELS_DIR = Path(__file__).resolve().parent / "saved_models"
 
@@ -41,83 +42,100 @@ def get_model(model_type="random_forest"):
         raise ValueError(f"Unknown model_type: {model_type}. Expected 'random_forest' or 'linear_regression'.")
 
 
+def _resolve_hour(departure_hour, time_of_day):
+    if departure_hour is not None:
+        return int(departure_hour) % 24
+    return BUCKET_TO_HOUR.get(str(time_of_day or "morning_peak").lower(), 9)
+
+
+def _feature_row(distance_km, transport_type, stops_count, hour, day_type):
+    day_type = str(day_type or "weekday").lower()
+    return {
+        "distance_km": float(distance_km),
+        "stops_count": max(1, int(stops_count)),
+        "departure_hour": hour,
+        "transport_type": str(transport_type).lower(),
+        "time_of_day": time_of_day_bucket(hour, day_type),
+        "day_type": day_type,
+    }
+
+
 def predict_travel_time(
     distance_km: float,
     transport_type: str,
-    fare_inr: float = 0.0,
     stops_count: int = 1,
-    time_of_day: str = "morning_peak",
+    departure_hour: int = None,
+    time_of_day: str = None,
     day_type: str = "weekday",
-    model_type: str = "random_forest"
+    model_type: str = "random_forest",
+    fare_inr: float = None,  # accepted for backward compatibility; no longer a feature
 ) -> float:
     """
-    Predict travel time in minutes for a single transit leg or trip.
-    
-    Parameters:
-    - distance_km: Trip distance in km
-    - transport_type: Mode (metro, rail, bus, walk, auto, cab)
-    - fare_inr: Estimated fare in INR
-    - stops_count: Number of intermediate stops/stations (default: 1)
-    - time_of_day: 'morning_peak', 'evening_peak', 'afternoon', 'off_peak', 'weekend_day', 'weekend_night'
-    - day_type: 'weekday' or 'weekend'
-    - model_type: 'random_forest' or 'linear_regression'
-    
-    Returns:
-    - Predicted travel time in minutes (float)
+    Predict the travel time (minutes) of one continuous ride segment.
+
+    - distance_km:    ride distance
+    - transport_type: metro | rail | bus | walk | auto | cab
+    - stops_count:    number of stops travelled on this ride (>= 1)
+    - departure_hour: 0-23. If omitted, derived from time_of_day
+                      ('morning_peak', 'evening_peak', 'afternoon', 'off_peak',
+                       'weekend_day', 'weekend_night').
+    - day_type:       'weekday' | 'weekend'
     """
     model = get_model(model_type)
-    
-    input_df = pd.DataFrame([{
-        "distance_km": float(distance_km),
-        "fare_inr": float(fare_inr),
-        "stops_count": int(stops_count),
-        "transport_type": str(transport_type).lower(),
-        "time_of_day": str(time_of_day).lower(),
-        "day_type": str(day_type).lower()
-    }])
-
-    pred = model.predict(input_df)[0]
-    return round(float(pred), 2)
+    hour = _resolve_hour(departure_hour, time_of_day)
+    row = _feature_row(distance_km, transport_type, stops_count, hour, day_type)
+    return round(float(model.predict(pd.DataFrame([row]))[0]), 2)
 
 
 def enhance_route_with_ml(
     route_result: dict,
     model_type: str = "random_forest",
-    time_of_day: str = "morning_peak",
-    day_type: str = "weekday"
+    time_of_day: str = None,
+    day_type: str = "weekday",
+    departure_hour: int = None,
 ) -> dict:
     """
-    Takes a route dictionary returned by router.find_route(...) and adds
-    ML-predicted travel times alongside graph baseline times.
+    Add ML-predicted times to a route returned by router.find_route().
+
+    Predictions are made per *segment* (one continuous ride, the same unit the
+    models were trained on). Each segment's prediction is then shared across
+    its legs in proportion to their timetable times. Segment start times are
+    chained, so a later segment uses the hour at which it actually starts.
     """
     if route_result is None:
         return None
-
     model = get_model(model_type)
     enriched = dict(route_result)
-    
-    legs_inputs = []
-    for leg in enriched.get("legs", []):
-        legs_inputs.append({
-            "distance_km": float(leg["distance_km"]),
-            "fare_inr": float(leg.get("fare_inr", 0.0)),
-            "stops_count": 1,
-            "transport_type": str(leg["transport_type"]).lower(),
-            "time_of_day": time_of_day,
-            "day_type": day_type
-        })
-        
-    if legs_inputs:
-        preds = model.predict(pd.DataFrame(legs_inputs))
-        ml_total_time = 0.0
-        for leg, pred_time in zip(enriched["legs"], preds):
-            pred_time = round(float(pred_time), 2)
-            leg["ml_predicted_time_min"] = pred_time
-            ml_total_time += pred_time
-            
-        enriched["ml_total_time_min"] = round(ml_total_time, 2)
-        enriched["ml_model_used"] = model_type
-        enriched["time_of_day"] = time_of_day
-        enriched["day_type"] = day_type
-        
+    hour0 = _resolve_hour(departure_hour, time_of_day)
+    segments = enriched.get("segments", [])
+    if not segments:
+        return enriched
+
+    elapsed = 0.0
+    total = 0.0
+    for seg in segments:
+        hour = int(hour0 + elapsed / 60.0) % 24
+        row = _feature_row(seg["distance_km"], seg["transport_type"], seg.get("num_stops", 1),
+                           hour, day_type)
+        pred = round(float(model.predict(pd.DataFrame([row]))[0]), 2)
+        seg["ml_predicted_time_min"] = pred
+        elapsed += pred
+        total += pred
+
+    # distribute segment predictions to legs (legs are ordered segment by segment)
+    legs = enriched.get("legs", [])
+    li = 0
+    for seg in segments:
+        n = seg.get("num_stops", 1)
+        seg_legs = legs[li:li + n]
+        li += n
+        base = sum(l.get("time_min", 0.0) for l in seg_legs) or 1.0
+        for l in seg_legs:
+            l["ml_predicted_time_min"] = round(seg["ml_predicted_time_min"] * l.get("time_min", 0.0) / base, 2)
+
+    enriched["ml_total_time_min"] = round(total, 2)
+    enriched["ml_model_used"] = model_type
+    enriched["departure_hour"] = hour0
+    enriched["time_of_day"] = time_of_day_bucket(hour0, day_type)
+    enriched["day_type"] = day_type
     return enriched
