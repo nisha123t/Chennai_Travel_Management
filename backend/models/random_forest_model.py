@@ -24,9 +24,12 @@ class RandomForestTravelTimeModel:
     CATEGORICAL_FEATURES = ["transport_type", "time_of_day", "day_type"]
     TARGET = "travel_time_min"
 
-    def __init__(self, n_estimators=200, max_depth=14, random_state=42):
+    def __init__(self, n_estimators=200, max_depth=14, min_samples_leaf=1,
+                 max_features=1.0, random_state=42):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
+        self.min_samples_leaf = min_samples_leaf
+        self.max_features = max_features
         self.random_state = random_state
 
         self.preprocessor = ColumnTransformer(
@@ -41,6 +44,8 @@ class RandomForestTravelTimeModel:
                 ("regressor", RandomForestRegressor(
                     n_estimators=self.n_estimators,
                     max_depth=self.max_depth,
+                    min_samples_leaf=self.min_samples_leaf,
+                    max_features=self.max_features,
                     random_state=self.random_state,
                     n_jobs=-1
                 ))
@@ -106,7 +111,7 @@ class RandomForestTravelTimeModel:
             "pipeline": self.pipeline,
             "metrics": self.metrics,
             "is_fitted": self.is_fitted
-        }, path)
+        }, path, compress=3)  # compressed: keeps the file well under GitHub's 100 MB limit
         print(f"Random Forest model saved to {path}")
 
     @classmethod

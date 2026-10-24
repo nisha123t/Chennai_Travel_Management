@@ -101,7 +101,7 @@ class LinearRegressionTravelTimeModel:
             "pipeline": self.pipeline,
             "metrics": self.metrics,
             "is_fitted": self.is_fitted
-        }, path)
+        }, path, compress=3)  # compressed: keeps the file well under GitHub's 100 MB limit
         print(f"Linear Regression model saved to {path}")
 
     @classmethod

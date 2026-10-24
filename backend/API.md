@@ -96,4 +96,6 @@ Features: `distance_km`, `stops_count`, `departure_hour`, `transport_type`, `tim
 The target (observed ride time) is **simulated** from timetable times with a time-of-day congestion profile, mode sensitivity, dwell time and noise, because no open Chennai trip-time data exists.
 The test split is by route (`GroupShuffleSplit`), so test routes are unseen in training.
 
-Retrain: `cd backend/models && python train_models.py`
+Random Forest hyperparameters are tuned with `GridSearchCV` (36 settings, 3-fold GroupKFold by route, training data only); results are in `rf_tuning` in `/models/metrics`.
+
+Retrain: `cd backend/models && python train_models.py` (add `--no-tune` to skip tuning)

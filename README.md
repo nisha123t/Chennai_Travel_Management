@@ -23,7 +23,7 @@ cd backend
 python -m venv .venv
 # Windows: .venv\Scripts\activate   macOS/Linux/Codespaces: source .venv/bin/activate
 pip install -r requirements.txt
-cd models && python train_models.py && cd ..     # first time only, ~15 s
+cd models && python train_models.py && cd ..     # first time only, ~2-4 min (includes tuning)
 uvicorn main:app --reload --port 8000             # http://localhost:8000/docs
 ```
 
@@ -46,6 +46,9 @@ python -m pytest -q
 |---|---|---|---|
 | Timetable only | 4.59 | 8.44 | 0.875 |
 | Multiple Linear Regression | 5.66 | 8.06 | 0.886 |
-| Random Forest | **1.81** | **3.63** | **0.977** |
+| Random Forest (tuned) | **1.78** | **3.53** | **0.978** |
+
+Random Forest settings were chosen by grid search (36 combinations, grouped cross-validation on the
+training routes): cross-validated MAE 2.43 → 2.32 min. Use `python train_models.py --no-tune` to skip tuning.
 
 Journey-time targets are simulated from timetable data (see `backend/API.md`).

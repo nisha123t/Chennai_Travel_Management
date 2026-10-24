@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import GroupKFold, GroupShuffleSplit
+from sklearn.model_selection import GridSearchCV, GroupKFold, GroupShuffleSplit, cross_val_score
 
 from dataset_builder import generate_travel_time_dataset
 from linear_regression_model import LinearRegressionTravelTimeModel
@@ -56,7 +56,61 @@ def _cross_validate(make_model, X, y, groups, k=5):
            {f"{key}_std": round(float(np.std(v)), 4) for key, v in scores.items()}
 
 
-def run_training_pipeline(test_size=0.2, random_state=42):
+# Random Forest settings searched during tuning (36 combinations).
+RF_PARAM_GRID = {
+    "regressor__n_estimators": [100, 300],
+    "regressor__max_depth": [8, 14, None],
+    "regressor__min_samples_leaf": [1, 3, 8],
+    "regressor__max_features": [1.0, 0.5],
+}
+DEFAULT_RF = {"n_estimators": 200, "max_depth": 14, "min_samples_leaf": 1, "max_features": 1.0}
+
+
+def tune_random_forest(X, y, groups, random_state=42, folds=3):
+    """
+    Grid search over RF hyperparameters with GroupKFold on the TRAINING routes only
+    (the test set is never touched). Returns best params + a summary for the report.
+    """
+    print(f"\n[Tuning] Grid search: {np.prod([len(v) for v in RF_PARAM_GRID.values()])} settings "
+          f"x {folds}-fold grouped CV ...")
+    cv = list(GroupKFold(n_splits=folds).split(X, y, groups))
+    base = RandomForestTravelTimeModel(random_state=random_state).pipeline
+    search = GridSearchCV(base, RF_PARAM_GRID, cv=cv, scoring="neg_mean_absolute_error", n_jobs=1)
+    search.fit(X, y)
+
+    default_mae = -cross_val_score(RandomForestTravelTimeModel(random_state=random_state, **DEFAULT_RF).pipeline,
+                                   X, y, cv=cv, scoring="neg_mean_absolute_error").mean()
+    best = {k.replace("regressor__", ""): v for k, v in search.best_params_.items()}
+    res = search.cv_results_
+    order = np.argsort(-res["mean_test_score"])
+    table = [{
+        **{k.replace("regressor__", ""): res["params"][i][k] for k in res["params"][i]},
+        "cv_mae": round(float(-res["mean_test_score"][i]), 3),
+        "cv_mae_std": round(float(res["std_test_score"][i]), 3),
+    } for i in order]
+    # effect of each hyperparameter: mean CV MAE for each value, averaged over the others
+    effects = {}
+    for k, values in RF_PARAM_GRID.items():
+        name = k.replace("regressor__", "")
+        effects[name] = {str(v): round(float(np.mean([-res["mean_test_score"][i] for i in range(len(res["params"]))
+                                                     if res["params"][i][k] == v])), 3) for v in values}
+    summary = {
+        "method": f"GridSearchCV, {folds}-fold GroupKFold by route on training data, scoring = MAE",
+        "settings_tried": len(table),
+        "best_params": best,
+        "best_cv_mae": table[0]["cv_mae"],
+        "default_params": DEFAULT_RF,
+        "default_cv_mae": round(float(default_mae), 3),
+        "worst_cv_mae": table[-1]["cv_mae"],
+        "param_effects": effects,
+        "top_settings": table[:8],
+    }
+    print(f"  default {DEFAULT_RF}: CV MAE {default_mae:.3f}")
+    print(f"  best    {best}: CV MAE {table[0]['cv_mae']:.3f}  (worst {table[-1]['cv_mae']:.3f})")
+    return best, summary
+
+
+def run_training_pipeline(test_size=0.2, random_state=42, tune=True):
     print("=" * 60)
     print("  JOURNEY-TIME MODELS: TRAINING & EVALUATION")
     print("=" * 60)
@@ -74,9 +128,13 @@ def run_training_pipeline(test_size=0.2, random_state=42):
           f"Test: {len(test)} samples / {test.route_id.nunique()} unseen routes")
 
     SAVED_MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    tuning = None
+    rf_params = dict(DEFAULT_RF)
+    if tune:
+        rf_params, tuning = tune_random_forest(X_tr, y_tr, train["route_id"], random_state)
     makers = {
         "linear_regression": LinearRegressionTravelTimeModel,
-        "random_forest": lambda: RandomForestTravelTimeModel(random_state=random_state),
+        "random_forest": lambda: RandomForestTravelTimeModel(random_state=random_state, **rf_params),
     }
     labels = {"linear_regression": "Multiple Linear Regression", "random_forest": "Random Forest Regressor"}
 
@@ -101,6 +159,7 @@ def run_training_pipeline(test_size=0.2, random_state=42):
         if name == "random_forest":
             res["feature_importances"] = dict(list(model.get_feature_importances().items())[:10])
             res["n_estimators"], res["max_depth"] = model.n_estimators, model.max_depth
+            res["hyperparameters"] = rf_params
         else:
             res["coefficients"] = model.get_feature_coefficients()
         model.metrics = res
@@ -117,6 +176,7 @@ def run_training_pipeline(test_size=0.2, random_state=42):
                          "(no open Chennai trip-time data)",
         "features": FEATURES,
         **results,
+        "rf_tuning": tuning,
         "test_predictions_sample": scatter,
     }
     with open(SAVED_MODELS_DIR / "model_metrics.json", "w") as f:
@@ -136,4 +196,7 @@ def run_training_pipeline(test_size=0.2, random_state=42):
 
 
 if __name__ == "__main__":
-    run_training_pipeline()
+    import sys
+    # python train_models.py            -> tune Random Forest (about 2-4 min), then train + evaluate
+    # python train_models.py --no-tune  -> skip tuning, use default settings (about 15 s)
+    run_training_pipeline(tune="--no-tune" not in sys.argv)

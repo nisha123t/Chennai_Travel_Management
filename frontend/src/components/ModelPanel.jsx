@@ -79,6 +79,8 @@ export default function ModelPanel() {
           <h3>What the Random Forest relies on</h3>
           <Importances values={rf.feature_importances || {}} />
         </div>
+
+        {data.rf_tuning && <Tuning t={data.rf_tuning} />}
       </div>
     </section>
   );
@@ -174,5 +176,67 @@ function Importances({ values }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+const PARAM_TEXT = {
+  n_estimators: "Number of trees",
+  max_depth: "Maximum tree depth",
+  min_samples_leaf: "Minimum rides per leaf",
+  max_features: "Share of features per split",
+};
+const fmtParam = (k, v) =>
+  v === null || v === "None" ? "unlimited" : k === "max_features" ? `${Math.round(Number(v) * 100)}%` : String(v);
+
+function Tuning({ t }) {
+  const gain = t.default_cv_mae - t.best_cv_mae;
+  return (
+    <div className="panel panel-wide">
+      <h3>Tuning the Random Forest</h3>
+      <p className="tuning-lead">
+        We tried {t.settings_tried} combinations of settings, scoring each with cross-validation on the training
+        routes only. The best one cut the average error from <strong>{t.default_cv_mae.toFixed(2)}</strong> to{" "}
+        <strong>{t.best_cv_mae.toFixed(2)} min</strong> ({gain >= 0 ? "−" : "+"}{Math.abs(gain).toFixed(2)} min).
+        The worst setting scored {t.worst_cv_mae.toFixed(2)} min.
+      </p>
+      <div className="tuning-grid">
+        <table className="metrics tuning-table">
+          <thead>
+            <tr><th scope="col">Setting</th><th scope="col">Default</th><th scope="col">Chosen</th></tr>
+          </thead>
+          <tbody>
+            {Object.keys(PARAM_TEXT).map((k) => (
+              <tr key={k}>
+                <th scope="row">{PARAM_TEXT[k]}</th>
+                <td>{fmtParam(k, t.default_params[k])}</td>
+                <td>{fmtParam(k, t.best_params[k])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div>
+          <p className="tuning-sub">Average cross-validated error for each value (min)</p>
+          {Object.entries(t.param_effects).map(([k, vals]) => {
+            const entries = Object.entries(vals);
+            const min = Math.min(...entries.map((e) => e[1]));
+            const max = Math.max(...entries.map((e) => e[1]));
+            return (
+              <div className="effect" key={k}>
+                <div className="effect-name">{PARAM_TEXT[k] || k}</div>
+                <div className="effect-vals">
+                  {entries.map(([v, mae]) => (
+                    <span key={v} className={mae === min ? "effect-best" : ""}>
+                      {fmtParam(k, v)}: {mae.toFixed(2)}
+                    </span>
+                  ))}
+                </div>
+                {max > min && <div className="effect-spread">spread {(max - min).toFixed(2)}</div>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <p className="fineprint">{t.method}. The test set was not used for tuning.</p>
+    </div>
   );
 }
