@@ -20,7 +20,7 @@ class LinearRegressionTravelTimeModel:
     transport_type, time_of_day, and day_type.
     """
 
-    NUMERIC_FEATURES = ["distance_km", "fare_inr", "stops_count"]
+    NUMERIC_FEATURES = ["distance_km", "stops_count", "departure_hour"]
     CATEGORICAL_FEATURES = ["transport_type", "time_of_day", "day_type"]
     TARGET = "travel_time_min"
 
@@ -101,7 +101,7 @@ class LinearRegressionTravelTimeModel:
             "pipeline": self.pipeline,
             "metrics": self.metrics,
             "is_fitted": self.is_fitted
-        }, path)
+        }, path, compress=3)  # compressed: keeps the file well under GitHub's 100 MB limit
         print(f"Linear Regression model saved to {path}")
 
     @classmethod

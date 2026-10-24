@@ -1,5 +1,11 @@
-pandas
-networkx
-fastapi
-uvicorn
-scikit-learn
+fastapi>=0.110
+uvicorn>=0.27
+pydantic>=2.5
+pandas>=2.0
+numpy>=1.24
+networkx>=3.0
+scikit-learn>=1.3
+joblib>=1.3
+# tests
+pytest>=7.4
+httpx>=0.25
