@@ -11,11 +11,17 @@ frontend/   React (Vite) dashboard
 
 ## Run it
 
+Easiest: open the repo in **GitHub Codespaces** (green *Code* button → *Codespaces* → *Create codespace*).
+Python and Node are already installed there. Run the two parts below in two terminals
+(Terminal → New Terminal, or the **+** in the terminal panel). When `npm run dev` starts,
+click **Open in Browser** for port 5173. Only port 5173 needs to be opened; it forwards
+`/api` calls to the backend on port 8000.
+
 **Backend** (terminal 1)
 ```bash
 cd backend
 python -m venv .venv
-# Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
+# Windows: .venv\Scripts\activate   macOS/Linux/Codespaces: source .venv/bin/activate
 pip install -r requirements.txt
 cd models && python train_models.py && cd ..     # first time only, ~15 s
 uvicorn main:app --reload --port 8000             # http://localhost:8000/docs

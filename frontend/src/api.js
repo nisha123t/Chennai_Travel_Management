@@ -1,4 +1,6 @@
-const BASE = (import.meta.env && import.meta.env.VITE_API_URL) ?? "http://localhost:8000";
+// Default "/api" is forwarded to http://localhost:8000 by vite.config.js.
+// Set VITE_API_URL in frontend/.env to call a backend somewhere else.
+const BASE = (import.meta.env && import.meta.env.VITE_API_URL) || "/api";
 
 async function request(path, options = {}) {
   let res;
@@ -8,9 +10,12 @@ async function request(path, options = {}) {
       ...options,
     });
   } catch {
-    throw new Error(`Can't reach the backend at ${BASE}. Start it with: uvicorn main:app --reload --port 8000`);
+    throw new Error("Can't reach the backend. Start it in another terminal: cd backend, then uvicorn main:app --reload --port 8000");
   }
   const body = await res.json().catch(() => null);
+  if (!body && res.status >= 500) {
+    throw new Error("Can't reach the backend. Start it in another terminal: cd backend, then uvicorn main:app --reload --port 8000");
+  }
   if (!res.ok) {
     let detail = body && body.detail;
     if (Array.isArray(detail)) detail = detail.map((d) => `${d.loc?.slice(-1)[0]}: ${d.msg}`).join("; ");
