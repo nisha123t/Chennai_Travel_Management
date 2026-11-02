@@ -43,12 +43,21 @@ from urllib.request import Request, urlopen
 import networkx as nx
 import pandas as pd
 
+from models.predictor import select_model_for_context
 from router import calc_segment_fare
 
 DATA = Path(__file__).parent / "data"
 
 PREFERENCES = ("fastest", "cheapest", "least_walking", "balanced", "shortest")
 RIDE_MODES = ("metro", "rail", "bus", "auto", "cab")
+WEATHER_FACTORS = {
+    "clear": 1.0,
+    "cloudy": 1.05,
+    "rain": 1.18,
+    "storm": 1.30,
+    "heat": 1.12,
+    "fog": 1.08,
+}
 
 # Expected wait when boarding (approx. half the typical headway), minutes.
 BOARDING_WAIT_MIN = {"metro": 4.0, "rail": 6.0, "bus": 7.0, "auto": 3.0, "cab": 6.0}
@@ -480,9 +489,23 @@ def _resolved_endpoint(meta: dict, stop_id: str, endpoint: str) -> dict:
 # --------------------------------------------------------------------------
 # ML integration
 # --------------------------------------------------------------------------
-def _apply_ml(journeys: list[dict], departure_hour: int, day_type: str, model_type: str):
+def _apply_ml(journeys: list[dict], departure_hour: int, day_type: str, model_type: str, weather: str = "clear"):
     """Batch-predict every ride segment of every journey (one model call)."""
-    from models.predictor import predict_segments
+    from models.predictor import predict_segments, select_model_for_context, update_dynamic_model_reward
+
+    if model_type in ("dynamic_model_selection", "dynamic"):
+        sample = journeys[0] if journeys else None
+        if sample and sample.get("segments"):
+            segment = sample["segments"][0]
+            model_type = select_model_for_context(
+                segment["distance_km"],
+                segment["transport_type"],
+                departure_hour,
+                day_type,
+                weather,
+            )
+        else:
+            model_type = "random_forest"
 
     rows, refs = [], []
     for j in journeys:
@@ -502,6 +525,17 @@ def _apply_ml(journeys: list[dict], departure_hour: int, day_type: str, model_ty
         ml_ride = sum(s["ml_predicted_time_min"] for s in j["segments"])
         j["ml_total_time_min"] = round(ml_ride + j["wait_time_min"], 2)
 
+    if model_type in {"random_forest", "linear_regression", "xgboost"} and rows:
+        ctx = rows[0]
+        update_dynamic_model_reward(
+            float(ctx["distance_km"]),
+            ctx["transport_type"],
+            int(ctx["departure_hour"]),
+            ctx["day_type"],
+            weather,
+            model_type,
+        )
+
 
 # --------------------------------------------------------------------------
 # Ranking
@@ -510,26 +544,55 @@ def _time(j):
     return j.get("ml_total_time_min", j["total_time_min"])
 
 
+def _weather_multiplier(weather: str) -> float:
+    return WEATHER_FACTORS.get(weather, 1.0)
+
+
+def _apply_weather_delay(journey: dict, weather: str) -> float:
+    multiplier = _weather_multiplier(weather)
+    journey["_base_total_time_min"] = journey.get("_base_total_time_min", journey["total_time_min"])
+    if "ml_total_time_min" in journey:
+        journey["_base_ml_total_time_min"] = journey.get("_base_ml_total_time_min", journey["ml_total_time_min"])
+    if multiplier == 1.0:
+        journey["weather_delay_min"] = 0.0
+        return 0.0
+
+    extra = journey["total_time_min"] * (multiplier - 1.0)
+    journey["total_time_min"] = round(journey["total_time_min"] * multiplier, 2)
+    journey["in_vehicle_time_min"] = round(journey["in_vehicle_time_min"] * multiplier, 2)
+    journey["wait_time_min"] = round(journey["wait_time_min"] * multiplier, 2)
+    journey["weather_delay_min"] = round(extra, 2)
+    if "ml_total_time_min" in journey:
+        journey["ml_total_time_min"] = round(journey["ml_total_time_min"] * multiplier, 2)
+    return journey["weather_delay_min"]
+
+
+def _base_time(j):
+    if "ml_total_time_min" in j and "_base_ml_total_time_min" in j:
+        return j["_base_ml_total_time_min"]
+    return j.get("_base_total_time_min", j["total_time_min"])
+
+
 def _rank(journeys: list[dict], preference: str) -> list[dict]:
     if preference == "fastest":
-        key = lambda j: (_time(j), j["total_fare_inr"])
+        key = lambda j: (_base_time(j), j["total_fare_inr"])
     elif preference == "cheapest":
-        key = lambda j: (j["total_fare_inr"], _time(j))
+        key = lambda j: (j["total_fare_inr"], _base_time(j))
     elif preference == "least_walking":
-        key = lambda j: (j["walking_distance_km"], _time(j))
+        key = lambda j: (j["walking_distance_km"], _base_time(j))
     elif preference == "shortest":
-        key = lambda j: (j["total_distance_km"], _time(j))
+        key = lambda j: (j["total_distance_km"], _base_time(j))
     else:  # balanced: min-max normalised weighted score
         def norm(vals):
             lo, hi = min(vals), max(vals)
             return [(v - lo) / (hi - lo) if hi > lo else 0.0 for v in vals]
-        t = norm([_time(j) for j in journeys])
+        t = norm([_base_time(j) for j in journeys])
         f = norm([j["total_fare_inr"] for j in journeys])
         w = norm([j["walking_distance_km"] for j in journeys])
         x = norm([j["transfers"] for j in journeys])
-        for j, a, b, c, d in zip(journeys, t, f, w, x):
-            j["balanced_score"] = round(0.45 * a + 0.30 * b + 0.10 * c + 0.15 * d, 4)
-        key = lambda j: (j["balanced_score"], _time(j))
+        for j, a, b, c, dval in zip(journeys, t, f, w, x):
+            j["balanced_score"] = round(0.40 * a + 0.25 * b + 0.10 * c + 0.25 * dval, 4)
+        key = lambda j: (j["balanced_score"], _base_time(j))
     return sorted(journeys, key=key)
 
 
@@ -573,7 +636,8 @@ _CACHE_SIZE = 500
 
 def plan_journeys(start: str, destination: str, preference: str = "balanced",
                   max_options: int = 3, departure_hour: int = 9, day_type: str = "weekday",
-                  ml_enhanced: bool = True, model_type: str = "random_forest") -> dict:
+                  ml_enhanced: bool = True, model_type: str = "random_forest",
+                  weather: str = "clear") -> dict:
     if preference not in PREFERENCES:
         raise ValueError(f"preference must be one of {', '.join(PREFERENCES)}")
     if day_type not in ("weekday", "weekend"):
@@ -582,6 +646,8 @@ def plan_journeys(start: str, destination: str, preference: str = "balanced",
         raise ValueError("departure_hour must be between 0 and 23")
     if not 1 <= int(max_options) <= 5:
         raise ValueError("max_options must be between 1 and 5")
+    if weather not in WEATHER_FACTORS:
+        raise ValueError(f"weather must be one of {', '.join(WEATHER_FACTORS)}")
     start_meta = resolve_location(start)
     dest_meta = resolve_location(destination)
     start, destination = start_meta["stop_id"], dest_meta["stop_id"]
@@ -607,16 +673,37 @@ def plan_journeys(start: str, destination: str, preference: str = "balanced",
 
     for journey in pool:
         _add_access_legs(journey, start_meta, dest_meta, start, destination)
+        _apply_weather_delay(journey, weather)
 
     if not pool:
-        return {"start": _resolved_endpoint(start_meta, start, "start"),
+        return {
+            "start": _resolved_endpoint(start_meta, start, "start"),
             "destination": _resolved_endpoint(dest_meta, destination, "destination"),
-                "preference": preference, "options": [], "candidates_considered": 0}
+            "preference": preference,
+            "options": [],
+            "candidates_considered": 0,
+            "journey_context": {"weather": weather}
+        }
 
     ml_warning = None
+    selected_model = model_type
+    bandit_details = None
     if ml_enhanced:
         try:
-            _apply_ml(pool, int(departure_hour), day_type, model_type)
+            if model_type in ("dynamic_model_selection", "dynamic"):
+                first_segment = pool[0]["segments"][0] if pool and pool[0].get("segments") else None
+                if first_segment is not None:
+                    selected_model, bandit_details = select_model_for_context(
+                        float(first_segment["distance_km"]),
+                        first_segment["transport_type"],
+                        int(departure_hour),
+                        day_type,
+                        weather,
+                        return_details=True,
+                    )
+                else:
+                    selected_model = "random_forest"
+            _apply_ml(pool, int(departure_hour), day_type, selected_model, weather)
         except Exception as ex:  # fall back to timetable times
             ml_warning = f"ML prediction unavailable, using timetable times: {ex}"
 
@@ -626,6 +713,10 @@ def plan_journeys(start: str, destination: str, preference: str = "balanced",
         o["rank"] = i
         o["tags"] = []
         o["summary"] = " → ".join(s["mode_label"] for s in o["segments"])
+        if ml_enhanced and ml_warning is None:
+            o["ml_model_used"] = selected_model
+            if bandit_details:
+                o["bandit_details"] = bandit_details
     _tag(options)
 
     clean = [{k: v for k, v in o.items() if not k.startswith("_")} for o in options]
@@ -635,13 +726,22 @@ def plan_journeys(start: str, destination: str, preference: str = "balanced",
     while len(_CACHE) > _CACHE_SIZE:
         _CACHE.popitem(last=False)
 
+    journey_ctx = {
+        "weather": weather,
+        "selection_mode": model_type,
+        "selected_model": selected_model if ml_enhanced and ml_warning is None else None,
+    }
+    if bandit_details:
+        journey_ctx["bandit_details"] = bandit_details
+
     result = {
         "start": _resolved_endpoint(start_meta, start, "start"),
         "destination": _resolved_endpoint(dest_meta, destination, "destination"),
         "preference": preference, "departure_hour": int(departure_hour), "day_type": day_type,
         "ml_enhanced": ml_enhanced and ml_warning is None,
-        "model_used": model_type if ml_enhanced and ml_warning is None else None,
+        "model_used": selected_model if ml_enhanced and ml_warning is None else None,
         "candidates_considered": len(pool),
+        "journey_context": journey_ctx,
         "options": clean,
     }
     if ml_warning:

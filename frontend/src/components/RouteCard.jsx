@@ -61,6 +61,11 @@ export default function RouteCard({ option, selected, expanded, onSelect, onTogg
             )}
           </div>
           <div className="card-tags">
+            {mlOn && option.bandit_details && (
+              <span className="tag tag-bandit" title={option.bandit_details.selection_reason}>
+                ⚡ {option.bandit_details.selected_model === "random_forest" ? "Random Forest" : option.bandit_details.selected_model === "xgboost" ? "XGBoost" : "Linear Reg"} (Dynamic)
+              </span>
+            )}
             {option.tags.map((t) => (
               <span key={t} className={`tag tag-${t}`}>{TAG_TEXT[t] || t}</span>
             ))}

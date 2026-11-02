@@ -270,9 +270,38 @@ def test_peak_hour_slower_than_night_for_bus():
 def test_metrics_file_has_comparison():
     import json
     m = json.loads((BACKEND / "models" / "saved_models" / "model_metrics.json").read_text())
-    for k in ("linear_regression", "random_forest", "baseline_timetable"):
+    for k in ("linear_regression", "random_forest", "xgboost", "baseline_timetable"):
         assert {"mae", "rmse", "r2_score"} <= set(m[k])
     assert m["random_forest"]["mae"] < m["baseline_timetable"]["mae"]
+
+
+def test_xgboost_model_is_available():
+    from predictor import predict_travel_time
+    pred = predict_travel_time(10, "bus", stops_count=6, departure_hour=18, model_type="xgboost")
+    assert pred > 0
+
+
+def test_dynamic_model_selection_uses_supported_model():
+    r = eng.plan_journeys("S001", "S058", "balanced", ml_enhanced=True, model_type="dynamic_model_selection")
+    assert r["model_used"] in {"random_forest", "linear_regression", "xgboost"}
+    assert r["journey_context"]["selection_mode"] == "dynamic_model_selection"
+    assert "bandit_details" in r["journey_context"]
+    assert "overhead_reduction_pct" in r["journey_context"]["bandit_details"]["legacy_comparison"]
+    assert r["journey_context"]["bandit_details"]["legacy_comparison"]["overhead_reduction_pct"] > 50.0
+
+
+def test_contextual_bandit_selection_logic():
+    from predictor import select_model_for_context, get_bandit_stats
+    model, details = select_model_for_context(15.0, "bus", departure_hour=18, day_type="weekday", weather="clear", return_details=True)
+    assert model in {"random_forest", "xgboost", "linear_regression"}
+    assert details["selected_model"] == model
+    assert details["algorithm"] == "Contextual Multi-Armed Bandit (UCB1 + Domain Priors)"
+    assert "arm_scores" in details
+    assert "selection_reason" in details
+    stats = get_bandit_stats()
+    assert stats["total_selections"] > 0
+    assert "benchmark_comparison" in stats
+
 
 
 # ------------------------------------------------------------------ API
@@ -295,6 +324,26 @@ def test_api_routes(client):
     assert client.get(f"/routes/{oid}").status_code == 200
 
 
+def test_weather_increases_journey_duration():
+    dry = eng.plan_journeys("S001", "S058", "balanced", ml_enhanced=False, weather="clear")
+    wet = eng.plan_journeys("S001", "S058", "balanced", ml_enhanced=False, weather="rain")
+    assert wet["journey_context"]["weather"] == "rain"
+    assert wet["options"][0]["total_time_min"] > dry["options"][0]["total_time_min"]
+
+
+def test_api_accepts_weather_field(client):
+    payload = {
+        "start": "S001",
+        "destination": "S058",
+        "preference": "balanced",
+        "weather": "rain",
+    }
+    r = client.post("/routes", json=payload)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["journey_context"]["weather"] == "rain"
+
+
 def test_api_errors(client):
     assert client.post("/routes", json={"start": "S001", "destination": "S001"}).status_code == 400
     assert client.post("/routes", json={"start": "nowhere", "destination": "S001"}).status_code == 400
@@ -306,6 +355,22 @@ def test_api_errors(client):
 def test_api_search_and_metrics(client):
     assert client.get("/stops/search", params={"q": "central"}).json()
     assert client.get("/stops").status_code == 200
-    assert client.get("/models/metrics").status_code == 200
-    r = client.post("/predict-time", json={"distance_km": 12.5, "transport_type": "bus", "departure_hour": 18})
+    metrics = client.get("/models/metrics").json()
+    assert "dynamic_selection" in metrics
+    bandit = client.get("/models/bandit-stats").json()
+    assert bandit["algorithm"].startswith("Contextual Multi-Armed Bandit")
+    r = client.post("/predict-time", json={"distance_km": 12.5, "transport_type": "bus", "departure_hour": 18, "model_type": "dynamic_model_selection"})
     assert r.status_code == 200 and r.json()["predicted_travel_time_min"] > 0
+    route_req = {
+        "start": "S001",
+        "destination": "S058",
+        "preference": "fastest",
+        "model": "dynamic_model_selection",
+        "ml_enhanced": True,
+    }
+    route_res = client.post("/routes", json=route_req)
+    assert route_res.status_code == 200
+    body = route_res.json()
+    assert body["journey_context"]["selection_mode"] == "dynamic_model_selection"
+    assert "bandit_details" in body["journey_context"]
+

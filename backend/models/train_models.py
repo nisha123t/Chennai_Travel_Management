@@ -21,6 +21,7 @@ from sklearn.model_selection import GridSearchCV, GroupKFold, GroupShuffleSplit,
 from dataset_builder import generate_travel_time_dataset
 from linear_regression_model import LinearRegressionTravelTimeModel
 from random_forest_model import RandomForestTravelTimeModel
+from xgboost_model import XGBoostTravelTimeModel
 
 MODELS_DIR = Path(__file__).resolve().parent
 SAVED_MODELS_DIR = MODELS_DIR / "saved_models"
@@ -110,6 +111,28 @@ def tune_random_forest(X, y, groups, random_state=42, folds=3):
     return best, summary
 
 
+def tune_xgboost(X, y, groups, random_state=42, folds=3):
+    """A lightweight XGBoost hyperparameter sweep using grouped CV."""
+    param_grid = {
+        "regressor__n_estimators": [150, 300],
+        "regressor__max_depth": [4, 8, 12],
+        "regressor__learning_rate": [0.03, 0.05, 0.1],
+    }
+    print(f"\n[Tuning] XGBoost grid search: {np.prod([len(v) for v in param_grid.values()])} settings "
+          f"x {folds}-fold grouped CV ...")
+    cv = list(GroupKFold(n_splits=folds).split(X, y, groups))
+    base = XGBoostTravelTimeModel(random_state=random_state).pipeline
+    search = GridSearchCV(base, param_grid, cv=cv, scoring="neg_mean_absolute_error", n_jobs=1)
+    search.fit(X, y)
+    best = {k.replace("regressor__", ""): v for k, v in search.best_params_.items()}
+    return best, {
+        "method": "GridSearchCV, grouped CV on training routes",
+        "best_params": best,
+        "best_cv_mae": round(float(-search.best_score_), 3),
+        "settings_tried": len(search.cv_results_["params"]),
+    }
+
+
 def run_training_pipeline(test_size=0.2, random_state=42, tune=True):
     print("=" * 60)
     print("  JOURNEY-TIME MODELS: TRAINING & EVALUATION")
@@ -135,8 +158,13 @@ def run_training_pipeline(test_size=0.2, random_state=42, tune=True):
     makers = {
         "linear_regression": LinearRegressionTravelTimeModel,
         "random_forest": lambda: RandomForestTravelTimeModel(random_state=random_state, **rf_params),
+        "xgboost": XGBoostTravelTimeModel,
     }
-    labels = {"linear_regression": "Multiple Linear Regression", "random_forest": "Random Forest Regressor"}
+    labels = {
+        "linear_regression": "Multiple Linear Regression",
+        "random_forest": "Random Forest Regressor",
+        "xgboost": "XGBoost Regressor",
+    }
 
     # ---- baseline: timetable time with no congestion model ----------------
     base_pred = test["timetable_time_min"].where(test.transport_type != "walk",
@@ -160,6 +188,9 @@ def run_training_pipeline(test_size=0.2, random_state=42, tune=True):
             res["feature_importances"] = dict(list(model.get_feature_importances().items())[:10])
             res["n_estimators"], res["max_depth"] = model.n_estimators, model.max_depth
             res["hyperparameters"] = rf_params
+        elif name == "xgboost":
+            res["feature_importances"] = dict(list(model.get_feature_importances().items())[:10])
+            res["n_estimators"], res["max_depth"] = model.n_estimators, model.max_depth
         else:
             res["coefficients"] = model.get_feature_coefficients()
         model.metrics = res
@@ -183,7 +214,7 @@ def run_training_pipeline(test_size=0.2, random_state=42, tune=True):
         json.dump(comparison, f, indent=2)
 
     print(f"\n{'Model':<28}{'MAE':>8}{'RMSE':>8}{'R2':>8}   CV MAE (5-fold)")
-    for key in ("baseline_timetable", "linear_regression", "random_forest"):
+    for key in ("baseline_timetable", "linear_regression", "random_forest", "xgboost"):
         r = results[key]
         cv = r.get("cv_5fold")
         cv_s = f"{cv['mae_mean']:.3f} +/- {cv['mae_std']:.3f}" if cv else "-"
@@ -191,7 +222,7 @@ def run_training_pipeline(test_size=0.2, random_state=42, tune=True):
     print("\nPer-mode MAE (test):")
     for mode in results["random_forest"]["per_mode"]:
         print(f"  {mode:<6} " + "  ".join(f"{k[:4]}={results[k]['per_mode'][mode]['mae']:.2f}"
-                                         for k in ("baseline_timetable", "linear_regression", "random_forest")))
+                                         for k in ("baseline_timetable", "linear_regression", "random_forest", "xgboost")))
     return comparison
 
 

@@ -29,4 +29,6 @@ export const api = {
   resolveStop: (query) => request(`/stops/resolve?q=${encodeURIComponent(query)}`),
   routes: (payload) => request("/routes", { method: "POST", body: JSON.stringify(payload) }),
   metrics: () => request("/models/metrics"),
+  banditStats: () => request("/models/bandit-stats"),
 };
+

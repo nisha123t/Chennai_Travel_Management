@@ -1,6 +1,6 @@
 """
 Machine Learning models package for Multimodal Travel Time Prediction in Chennai.
-Exposes Multiple Linear Regression and Random Forest models and inference functions.
+Exposes Multiple Linear Regression, Random Forest and XGBoost models and inference functions.
 """
 from pathlib import Path
 import sys
@@ -12,12 +12,14 @@ if _current_dir not in sys.path:
 
 from linear_regression_model import LinearRegressionTravelTimeModel
 from random_forest_model import RandomForestTravelTimeModel
+from xgboost_model import XGBoostTravelTimeModel
 from predictor import predict_travel_time, enhance_route_with_ml, get_model
 from train_models import run_training_pipeline
 
 __all__ = [
     "LinearRegressionTravelTimeModel",
     "RandomForestTravelTimeModel",
+    "XGBoostTravelTimeModel",
     "predict_travel_time",
     "enhance_route_with_ml",
     "get_model",

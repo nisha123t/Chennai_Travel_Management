@@ -32,8 +32,9 @@ app.add_middleware(
 
 Preference = Literal["fastest", "cheapest", "least_walking", "balanced", "shortest"]
 DayType = Literal["weekday", "weekend"]
-ModelType = Literal["random_forest", "linear_regression"]
+ModelType = Literal["random_forest", "linear_regression", "xgboost", "dynamic_model_selection", "dynamic"]
 Mode = Literal["metro", "rail", "bus", "walk", "auto", "cab"]
+WeatherCondition = Literal["clear", "cloudy", "rain", "storm", "heat", "fog"]
 
 
 # ---------------------------------------------------------------- schemas
@@ -52,6 +53,7 @@ class JourneyRequest(BaseModel):
     max_options: int = Field(3, ge=1, le=5)
     ml_enhanced: bool = True
     model: ModelType = "random_forest"
+    weather: WeatherCondition = "clear"
 
     @field_validator("start", "destination")
     @classmethod
@@ -78,7 +80,12 @@ def home():
     return {
         "message": "Chennai Multimodal Route Planner API is running",
         "docs": "/docs",
-        "ml_models": ["Multiple Linear Regression", "Random Forest Regressor"],
+        "ml_models": [
+            "Multiple Linear Regression",
+            "Random Forest Regressor",
+            "XGBoost Regressor",
+            "Dynamic model selection (contextual bandit)",
+        ],
     }
 
 
@@ -118,8 +125,17 @@ def route_options(req: JourneyRequest):
     fare, walking distance, transfers, mode changes, segments and legs.
     """
     try:
-        result = plan_journeys(req.start, req.destination, req.preference, req.max_options,
-                               req.departure_hour, req.day_type, req.ml_enhanced, req.model)
+        result = plan_journeys(
+            req.start,
+            req.destination,
+            req.preference,
+            req.max_options,
+            req.departure_hour,
+            req.day_type,
+            req.ml_enhanced,
+            req.model,
+            weather=req.weather,
+        )
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
     if not result["options"]:
@@ -178,8 +194,19 @@ def predict_time(req: PredictionRequest):
 
 @app.get("/models/metrics", tags=["ml"])
 def get_metrics():
-    """Evaluation metrics for Linear Regression vs Random Forest (and timetable baseline)."""
+    """Evaluation metrics for Linear Regression vs Random Forest vs XGBoost (and timetable baseline), plus Contextual Bandit stats."""
     path = Path(__file__).resolve().parent / "models" / "saved_models" / "model_metrics.json"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Model metrics not found. Run models/train_models.py.")
-    return json.loads(path.read_text())
+    data = json.loads(path.read_text())
+    from models.predictor import get_bandit_stats
+    data["dynamic_selection"] = get_bandit_stats()
+    return data
+
+
+@app.get("/models/bandit-stats", tags=["ml"])
+def get_bandit_diagnostics():
+    """Real-time Contextual Bandit telemetry, arm distribution, and latency comparison vs previous paper."""
+    from models.predictor import get_bandit_stats
+    return get_bandit_stats()
+
