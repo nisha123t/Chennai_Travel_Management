@@ -44,8 +44,8 @@ def test_values_sane(data):
     assert (c.distance_km > 0).all() and (c.estimated_time_min > 0).all()
     assert (c.fare_inr >= 0).all()
     assert c.transport_type.isin(["metro", "rail", "bus", "walk", "auto", "cab"]).all()
-    # every stop lies inside greater Chennai
-    assert s.latitude.between(12.6, 13.5).all() and s.longitude.between(79.8, 80.4).all()
+    # Include Chennai, Chengalpattu, Kanchipuram, and nearby ECR corridors.
+    assert s.latitude.between(12.2, 13.6).all() and s.longitude.between(79.5, 80.8).all()
 
 
 def test_network_connected():
@@ -147,6 +147,116 @@ def test_stop_search():
     assert hits and hits[0]["stop_name"].lower().startswith("tamb")
     assert eng.search_stops("zzzz") == []
     assert eng.resolve_stop("Chennai Central") == eng.search_stops("Chennai Central")[0]["stop_id"]
+
+
+def test_freeform_place_name_geocodes_to_nearest_stop(monkeypatch):
+    def fake_geocode(query):
+        if "vit" in query.lower():
+            return {"latitude": 12.849, "longitude": 80.161, "display_name": "VIT Chennai, Tamil Nadu"}
+        return {"latitude": 13.078, "longitude": 80.261, "display_name": "Egmore Museum, Chennai"}
+
+    monkeypatch.setattr(eng, "geocode_place", fake_geocode)
+    resolved = eng.resolve_stop("VIT Chennai")
+    assert resolved in eng.STOPS
+    route = eng.plan_journeys("VIT Chennai", "Egmore Museum", ml_enhanced=False)
+    assert route["start"]["stop_id"] == resolved
+    assert route["destination"]["stop_id"] == "S025"
+
+
+def test_same_station_place_destination_is_shown_as_last_mile_walk(monkeypatch):
+    monkeypatch.setattr(
+        eng,
+        "geocode_place",
+        lambda query: {"latitude": 13.064, "longitude": 80.243, "display_name": "Valluvar Kottam, Chennai"},
+    )
+    result = eng.plan_journeys("Nungambakkam", "Valluvar Kottam", ml_enhanced=False)
+    option = result["options"][0]
+    last_mile = option["segments"][-1]
+
+    assert result["destination"]["stop_id"] == "S043"
+    assert result["destination"]["access_mode"] == "walk"
+    assert last_mile["access_leg"] is True
+    assert last_mile["from_name"] == "Nungambakkam"
+    assert last_mile["to_name"] == "Valluvar Kottam"
+    assert last_mile["distance_km"] == pytest.approx(0.56)
+    assert last_mile["wait_min"] == 0
+    assert option["transfers"] == 0
+    assert option["walking_distance_km"] == pytest.approx(0.56)
+
+
+@pytest.mark.parametrize("distance,expected_mode", [(0.8, "walk"), (2.0, "auto"), (5.5, "cab")])
+def test_geocoded_access_mode_uses_distance_bands(monkeypatch, distance, expected_mode):
+    monkeypatch.setattr(eng, "geocode_place", lambda query: {"latitude": 13.0, "longitude": 80.0})
+    monkeypatch.setattr(
+        eng,
+        "nearest_stop_for_coordinates",
+        lambda latitude, longitude: {
+            "stop_id": "S043", "stop_name": "Nungambakkam", "area": "Nungambakkam", "distance_km": distance,
+        },
+    )
+    assert eng.resolve_location("Somewhere in Chennai")["access_mode"] == expected_mode
+
+
+def test_manual_vandalur_kelambakkam_corridor_stops_are_present(data):
+    required = {
+        "Kelambakkam Road Junction",
+        "Samiyar Pannai",
+        "Chettinad Hospital",
+        "Pudupakkam",
+        "Anjaneyar Temple Pudupakkam",
+        "Mambakkam Road Junction",
+        "Melakottaiyur",
+        "Kandigai",
+        "Vengambakkam Road Junction",
+        "Kolapakkam / Nallambakkam",
+        "Anna Nagar Colony",
+        "Vandalur Zoo",
+        "VIT Chennai",
+    }
+    names = {stop["stop_name"] for stop in eng.list_stops()}
+    assert required.issubset(names)
+    assert eng.resolve_stop("VIT Chennai") in eng.STOPS
+
+    sequences = data["stop_sequences"]
+    outbound = sequences[sequences.route_id == "MTC_555G_MANUAL_K2V"].sort_values("sequence_no")
+    inbound = sequences[sequences.route_id == "MTC_555G_MANUAL_V2K"].sort_values("sequence_no")
+    expected = ["S141", "S142", "S148", "S143", "S149", "S144", "S147", "S150",
+                "S145", "S146", "S151", "S152", "S136"]
+    assert outbound.stop_id.tolist() == expected
+    assert inbound.stop_id.tolist() == expected[::-1]
+
+
+def test_vit_to_vandalur_uses_one_continuous_555g_ride():
+    result = eng.plan_journeys("VIT Chennai", "Vandalur Zoo", "fastest", ml_enhanced=False)
+    corridor_segments = [
+        segment
+        for option in result["options"]
+        for segment in option["segments"]
+        if segment["route_id"] == "MTC_555G_MANUAL_K2V"
+    ]
+    assert corridor_segments
+    assert any(
+        segment["from_stop"] == "S147"
+        and segment["to_stop"] == "S136"
+        and segment["num_stops"] == 6
+        and segment["wait_min"] == eng.BOARDING_WAIT_MIN["bus"]
+        for segment in corridor_segments
+    )
+
+
+def test_manual_vit_corridor_distances_match_stop_coordinates(data):
+    corridor_route_ids = {"MTC_555G_MANUAL_K2V", "MTC_555G_MANUAL_V2K"}
+    connections = data["connections"][data["connections"].route_id.isin(corridor_route_ids)]
+    stops = data["stops"].set_index("stop_id")
+    assert len(connections) == 24
+    for connection in connections.itertuples(index=False):
+        origin = stops.loc[connection.from_stop]
+        destination = stops.loc[connection.to_stop]
+        minimum_km = eng.haversine_km(
+            origin.latitude, origin.longitude,
+            destination.latitude, destination.longitude,
+        )
+        assert connection.distance_km >= minimum_km
 
 
 # ------------------------------------------------------------------ ML

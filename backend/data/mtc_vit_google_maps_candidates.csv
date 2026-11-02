@@ -1,0 +1,14 @@
+route_code,sequence_no,stage_name,candidate_latitude,candidate_longitude,google_maps_result,review_status,google_maps_search_url
+555G,3,SEMMANCHERI,12.8601432,80.2272254,Semmancheri,ambiguous_multiple_pins,https://www.google.com/maps/search/?api=1&query=Semmancheri%20near%20VIT%20Chennai
+555G,6,PALAVASTHIC CHEMICALS,,,No exact result,no_exact_result,https://www.google.com/maps/search/?api=1&query=Palavasthic%20Chemicals%20near%20VIT%20Chennai
+555G,7,HINDUSTAN ENG. COLLEGE,12.8010274,80.224167,Hindustan Institute of Technology & Science,candidate_name_variant,https://www.google.com/maps/search/?api=1&query=Hindustan%20Engineering%20College%20near%20VIT%20Chennai
+555G,8,KELAMBAKKAM RD JN.,12.8408522,80.1539321,Vellore Institute of Technology - Chennai,nearby_landmark_candidate,https://www.google.com/maps/search/?api=1&query=Kelambakkam%20Road%20Junction%20near%20VIT%20Chennai
+555G,9,SAMIYAR PANNAI,12.7904827,80.2200559,Samiyar Pannai,multiple_close_pins,https://www.google.com/maps/search/?api=1&query=Samiyar%20Pannai%20near%20VIT%20Chennai
+555G,10,PUDUPAKKAM,12.7997073,80.1980312,Pudupakkam,ambiguous_multiple_localities,https://www.google.com/maps/search/?api=1&query=Pudupakkam%20near%20VIT%20Chennai
+555G,11,ARMY CAMP,12.976845,80.158611,Army Camp,ambiguous_route_context,https://www.google.com/maps/search/?api=1&query=Army%20Camp%20near%20VIT%20Chennai
+555G,12,MAMBAKKAM,12.8385371,80.1697145,Mambakkam,candidate_route_context,https://www.google.com/maps/search/?api=1&query=Mambakkam%20near%20VIT%20Chennai
+555G,13,KANDIGAI,12.8512687,80.1470451,Kandigai,candidate_route_context,https://www.google.com/maps/search/?api=1&query=Kandigai%20near%20VIT%20Chennai
+555G,14,VENGAMBAKKAM,12.873254,80.1329412,Vengapakkam,name_variant_candidate,https://www.google.com/maps/search/?api=1&query=Vengambakkam%20near%20VIT%20Chennai
+555G,15,KOLAPAKKAM,13.010112,80.1492317,Kolapakkam,ambiguous_route_context,https://www.google.com/maps/search/?api=1&query=Kolapakkam%20near%20VIT%20Chennai
+555G,18,URAPAKKAM,12.868,80.069,Urappakkam Railway Station,matches_existing_stop_alias,https://www.google.com/maps/search/?api=1&query=Urapakkam%20near%20VIT%20Chennai
+555G,19,PALAKKA COMPANY,12.856515,80.069479,Palakka Company,google_maps_pin_marked_closed,https://www.google.com/maps/search/?api=1&query=Palakka%20Company%20near%20VIT%20Chennai

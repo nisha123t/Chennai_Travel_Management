@@ -93,16 +93,27 @@ function Steps({ option, mlOn }) {
             <div className="step-line" aria-hidden="true" />
             <div className="step-body">
               <div className="step-title">
-                {s.transport_type === "walk"
+                {s.access_leg
+                  ? `Last-mile ${m.label.toLowerCase()}`
+                  : s.transport_type === "walk"
                   ? `Walk to ${s.to_name}`
                   : `${m.label}: ${s.route_name}`}
               </div>
               <div className="step-detail">
-                {s.transport_type === "walk"
+                {s.access_leg
+                  ? `${m.label} ${s.distance_km.toFixed(2)} km from ${s.from_name} to ${s.to_name}`
+                  : s.transport_type === "walk"
                   ? `${s.distance_km.toFixed(2)} km, about ${Math.round(t)} min`
                   : `Board at ${s.from_name}, ride ${s.num_stops} stop${s.num_stops > 1 ? "s" : ""} to ${s.to_name}`}
               </div>
-              {s.transport_type !== "walk" && (
+              {s.access_leg ? (
+                <div className="step-numbers">
+                  <span>{Math.round(t)} min {m.label.toLowerCase()}</span>
+                  {s.wait_min > 0 && <span>~{Math.round(s.wait_min)} min wait</span>}
+                  <span>{s.distance_km.toFixed(2)} km</span>
+                  <span>{s.fare_inr > 0 ? `₹${Number(s.fare_inr).toFixed(0)}` : "Free"}</span>
+                </div>
+              ) : s.transport_type !== "walk" && (
                 <div className="step-numbers">
                   <span>{Math.round(t)} min ride</span>
                   <span>~{Math.round(s.wait_min)} min wait</span>

@@ -26,6 +26,7 @@ async function request(path, options = {}) {
 
 export const api = {
   stops: () => request("/stops"),
+  resolveStop: (query) => request(`/stops/resolve?q=${encodeURIComponent(query)}`),
   routes: (payload) => request("/routes", { method: "POST", body: JSON.stringify(payload) }),
   metrics: () => request("/models/metrics"),
 };

@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 
 from router import find_route
-from route_engine import get_option, list_stops, plan_journeys, search_stops
+from route_engine import get_option, list_stops, plan_journeys, resolve_location, resolve_stop, search_stops, stop_info
 from models.predictor import enhance_route_with_ml, predict_travel_time
 
 app = FastAPI(
@@ -97,6 +97,17 @@ def get_all_stops():
 def stop_search(q: str = Query(..., min_length=1, max_length=60), limit: int = Query(10, ge=1, le=50)):
     """Search stops by name, area or id (prefix matches first)."""
     return search_stops(q, limit)
+
+
+@app.get("/stops/resolve", tags=["stops"])
+def stop_resolve(q: str = Query(..., min_length=1, max_length=120)):
+    """Resolve a stop ID, stop name, or free-form place string to the nearest known stop."""
+    try:
+        resolved = resolve_location(q)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return {"query": q, "stop_id": resolved["stop_id"], "stop": stop_info(resolved["stop_id"]),
+            "access_mode": resolved.get("access_mode"), "access_distance_km": resolved.get("access_distance_km")}
 
 
 @app.post("/routes", tags=["routing"])

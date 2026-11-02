@@ -45,8 +45,8 @@ print(
 
 # Coordinate boundary check
 invalid_coords = stops[
-    (stops["latitude"] < 12.6) | (stops["latitude"] > 13.5) |
-    (stops["longitude"] < 79.8) | (stops["longitude"] > 80.4)
+    (stops["latitude"] < 12.2) | (stops["latitude"] > 13.6) |
+    (stops["longitude"] < 79.5) | (stops["longitude"] > 80.8)
 ]
 print("Invalid coordinate count:", len(invalid_coords))
 

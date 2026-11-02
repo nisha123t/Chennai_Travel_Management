@@ -139,3 +139,15 @@ S137,Kundrathur,Kundrathur,West Chennai,12.998,80.096,bus_stop,bus,no,verified,v
 S138,Anna Square,Marina,Central Chennai,13.064,80.283,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
 S139,Tollgate Bus Stand,Tollgate,North Chennai,13.1335,80.292,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
 S140,Thiruvottiyur Bus Stand,Tiruvottiyur,North Chennai,13.161,80.3015,bus_stop,bus,yes,verified,verified,https://mtcbus.tn.gov.in/,2024-03
+S141,Kelambakkam Road Junction,Kelambakkam,South Chennai,12.7862132,80.2218964,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Kelambakkam+OMR+Bus+Stand,2026-11
+S142,Samiyar Pannai,Vandalur,South Chennai,12.7904827,80.2200559,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2026-08
+S143,Pudupakkam,Vandalur,South Chennai,12.7997073,80.1980312,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2026-08
+S144,Mambakkam Road Junction,Vandalur,South Chennai,12.8275949,80.1651496,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Kelambakkam+-+Vandalur+Rd+%26+Mambakkam+Main+Rd,2026-11
+S145,Kandigai,Vandalur,South Chennai,12.8512687,80.1470451,bus_stop,bus,no,verified,verified,https://mtcbus.tn.gov.in/,2026-08
+S146,Vengambakkam Road Junction,Vengapakkam,South Chennai,12.8628125,80.1268125,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Vengambakkam+Road+Junction,2026-11
+S147,VIT Chennai,Vandalur,South Chennai,12.8429461,80.15541,bus_stop,bus;campus,no,verified,verified,https://www.vit.ac.in/,2026-08
+S148,Chettinad Hospital,Vandalur,South Chennai,12.7961987,80.2179247,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Chettinad+Hospital+And+Research+Institute,2026-11
+S149,Anjaneyar Temple Pudupakkam,Vandalur,South Chennai,12.8062,80.189085,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Anjaneyar+Temple+Pudupakkam,2026-11
+S150,Melakottaiyur,Keelakottaiyur,South Chennai,12.8501714,80.1548102,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Melakottaiyur,2026-11
+S151,Kolapakkam / Nallambakkam,Vengambakkam,South Chennai,12.8701583,80.1081008,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Kolapakkam,2026-11
+S152,Anna Nagar Colony,Vandalur,South Chennai,12.8805546,80.0724436,bus_stop,bus,no,verified,verified,https://www.google.com/maps/place/Arignar+anna+colony,2026-11

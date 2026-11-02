@@ -50,15 +50,15 @@ for name, df in [("Stops", stops), ("Routes", routes), ("Sequences", sequences),
         print(f"    Columns with nulls in {name}:", df.columns[df.isnull().any()].tolist())
         errors.append(f"{name} has {null_count} null values")
 
-# 3. COORDINATE BOUNDARY CHECK (Chennai Metro Region: 12.6 to 13.5 Lat, 79.8 to 80.4 Lon)
+# 3. COORDINATE BOUNDARY CHECK (Chennai, Chengalpattu, Kanchipuram, and ECR)
 print("\n[3] Coordinate Boundaries:")
 lat_min, lat_max = stops["latitude"].min(), stops["latitude"].max()
 lon_min, lon_max = stops["longitude"].min(), stops["longitude"].max()
 print(f"    Latitude range:  {lat_min:.4f} to {lat_max:.4f}")
 print(f"    Longitude range: {lon_min:.4f} to {lon_max:.4f}")
 
-invalid_coords = stops[(stops["latitude"] < 12.6) | (stops["latitude"] > 13.5) | 
-                       (stops["longitude"] < 79.8) | (stops["longitude"] > 80.4)]
+invalid_coords = stops[(stops["latitude"] < 12.2) | (stops["latitude"] > 13.6) |
+                       (stops["longitude"] < 79.5) | (stops["longitude"] > 80.8)]
 print(f"    Invalid coordinate count: {len(invalid_coords)}")
 if len(invalid_coords) > 0:
     errors.append(f"Found {len(invalid_coords)} stops with out-of-bounds coordinates")

@@ -4,3 +4,4 @@ __pycache__/
 node_modules/
 frontend/dist/
 .pytest_cache/
+/backend/data/photon_geocode_cache.json

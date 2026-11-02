@@ -22,6 +22,8 @@ export default function App() {
 
   const [start, setStart] = useState("");
   const [dest, setDest] = useState("");
+  const [startQuery, setStartQuery] = useState("");
+  const [destQuery, setDestQuery] = useState("");
   const [preference, setPreference] = useState("balanced");
   const [hour, setHour] = useState(nowHour());
   const [dayType, setDayType] = useState([0, 6].includes(new Date().getDay()) ? "weekend" : "weekday");
@@ -41,13 +43,14 @@ export default function App() {
   const search = async (overrides = {}) => {
     const s = overrides.start ?? start;
     const d = overrides.dest ?? dest;
-    if (!s || !d) return setError("Choose where you’re starting from and where you’re going.");
-    if (s === d) return setError("Start and destination are the same stop. Pick a different destination.");
+    const sQuery = (overrides.startQuery ?? startQuery) || s;
+    const dQuery = (overrides.destQuery ?? destQuery) || d;
+    if (!sQuery || !dQuery) return setError("Choose where you’re starting from and where you’re going.");
     setLoading(true);
     setError(null);
     try {
       const r = await api.routes({
-        start: s, destination: d,
+        start: sQuery, destination: dQuery,
         preference: overrides.preference ?? preference,
         departure_hour: Number(overrides.hour ?? hour),
         day_type: overrides.dayType ?? dayType,
@@ -56,6 +59,10 @@ export default function App() {
         max_options: 3,
       });
       setResult(r);
+      setStart(r.start.stop_id);
+      setDest(r.destination.stop_id);
+      setStartQuery(sQuery);
+      setDestQuery(dQuery);
       setSelected(0);
       setExpanded(null);
     } catch (e) {
@@ -75,7 +82,9 @@ export default function App() {
   const swap = () => {
     setStart(dest);
     setDest(start);
-    if (result) search({ start: dest, dest: start });
+    setStartQuery(destQuery);
+    setDestQuery(startQuery);
+    if (result) search({ start: dest, dest: start, startQuery: destQuery, destQuery: startQuery });
   };
 
   const option = result?.options?.[selected];
@@ -107,11 +116,25 @@ export default function App() {
           <form className="planner" onSubmit={(e) => { e.preventDefault(); search(); }}>
             {stopsError && <div className="notice notice-error" role="alert">{stopsError}</div>}
             <div className="pickers">
-              <StopPicker label="From" stops={stops} value={start} onChange={setStart} dotColor="var(--ink)" />
+              <StopPicker
+                label="From"
+                stops={stops}
+                value={start}
+                onChange={(stopId, query) => { setStart(stopId); setStartQuery(query); }}
+                onQueryChange={setStartQuery}
+                dotColor="var(--ink)"
+              />
               <button type="button" className="swap" onClick={swap} aria-label="Swap start and destination" title="Swap">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v14M7 18l-3-3M7 18l3-3M17 20V6M17 6l-3 3M17 6l3 3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
-              <StopPicker label="To" stops={stops} value={dest} onChange={setDest} dotColor="var(--dest)" />
+              <StopPicker
+                label="To"
+                stops={stops}
+                value={dest}
+                onChange={(stopId, query) => { setDest(stopId); setDestQuery(query); }}
+                onQueryChange={setDestQuery}
+                dotColor="var(--dest)"
+              />
             </div>
 
             <fieldset className="prefs">
@@ -181,12 +204,17 @@ export default function App() {
             {result && (
               <div className={`result-grid${loading ? " is-stale" : ""}`}>
                 <div className="result-map">
-                  <JourneyMap stops={stops} option={option} startId={result.start.stop_id} destId={result.destination.stop_id} />
+                        <JourneyMap
+                          stops={stops}
+                          option={option}
+                          startId={result.start.access_place_id || result.start.stop_id}
+                          destId={result.destination.access_place_id || result.destination.stop_id}
+                        />
                 </div>
                 <div className="result-list">
                   <p className="result-meta">
-                    {result.options.length} route{result.options.length > 1 ? "s" : ""} from {result.start.stop_name} to{" "}
-                    {result.destination.stop_name}, leaving {fmtHour(result.departure_hour)} on a {result.day_type}.
+                    {result.options.length} route{result.options.length > 1 ? "s" : ""} from {endpointLabel(result.start)} to{" "}
+                    {endpointLabel(result.destination)}, leaving {fmtHour(result.departure_hour)} on a {result.day_type}.
                     {" "}Chosen from {result.candidates_considered} possible journeys.
                   </p>
                   {result.options.map((o, i) => (
@@ -209,6 +237,12 @@ export default function App() {
       )}
     </div>
   );
+}
+
+function endpointLabel(endpoint) {
+  return endpoint.access_query
+    ? `${endpoint.access_query} (nearest stop: ${endpoint.stop_name})`
+    : endpoint.stop_name;
 }
 
 function CompareTable({ options, mlOn, selected, onSelect }) {

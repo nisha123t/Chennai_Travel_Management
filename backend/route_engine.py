@@ -32,9 +32,13 @@ How it works
 from __future__ import annotations
 
 import itertools
+import json
+import math
 import uuid
 from collections import OrderedDict
 from pathlib import Path
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
 import networkx as nx
 import pandas as pd
@@ -145,15 +149,104 @@ def search_stops(query: str, limit: int = 10) -> list[dict]:
     return [t[2] for t in scored[:limit]]
 
 
+def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    rlat1, rlon1, rlat2, rlon2 = map(math.radians, (lat1, lon1, lat2, lon2))
+    dlat = rlat2 - rlat1
+    dlon = rlon2 - rlon1
+    a = math.sin(dlat / 2) ** 2 + math.cos(rlat1) * math.cos(rlat2) * math.sin(dlon / 2) ** 2
+    return 2 * 6371.0 * math.asin(math.sqrt(a))
+
+
+def geocode_place(query: str) -> dict | None:
+    """Geocode a free-form place query to latitude / longitude using OpenStreetMap Nominatim."""
+    q = (query or "").strip()
+    if not q:
+        return None
+    params = {
+        "q": f"{q}, Chennai, Tamil Nadu, India",
+        "format": "jsonv2",
+        "limit": 5,
+        "addressdetails": 1,
+        "bounded": 1,
+        "viewbox": "79.5,13.6,80.8,12.2",
+    }
+    req = Request(
+        f"https://nominatim.openstreetmap.org/search?{urlencode(params)}",
+        headers={"User-Agent": "ChennaiRoutePlanner/1.0"},
+    )
+    try:
+        with urlopen(req, timeout=8) as resp:
+            body = json.loads(resp.read().decode("utf-8"))
+    except Exception:
+        return None
+    if not body:
+        return None
+    first = body[0]
+    try:
+        return {
+            "latitude": float(first["lat"]),
+            "longitude": float(first["lon"]),
+            "display_name": first.get("display_name", q),
+        }
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def nearest_stop_for_coordinates(latitude: float, longitude: float) -> dict | None:
+    best = None
+    best_distance = float("inf")
+    for sid, s in STOPS.items():
+        stop_lat = float(s["latitude"])
+        stop_lon = float(s["longitude"])
+        distance_km = haversine_km(latitude, longitude, stop_lat, stop_lon)
+        if distance_km < best_distance:
+            best_distance = distance_km
+            best = {"stop_id": sid, "stop_name": s["stop_name"], "area": s["area"], "distance_km": distance_km}
+    return best
+
+
 def resolve_stop(value: str) -> str:
-    """Accept a stop_id (S001) or an exact/unique stop name; raise ValueError otherwise."""
+    """Accept a stop_id, exact name, or a free-form place name resolved to the nearest stop."""
+    return resolve_location(value)["stop_id"]
+
+
+def resolve_location(value: str) -> dict:
+    """Resolve a free-form place string to a stop plus the mode/distance for the last-mile access leg."""
     if value in STOPS:
-        return value
+        return {"stop_id": value, "location_type": "stop", "access_mode": None, "access_distance_km": 0.0}
+
     v = value.strip().lower()
     exact = [sid for sid, s in STOPS.items() if s["stop_name"].lower() == v]
     if len(exact) == 1:
-        return exact[0]
+        return {"stop_id": exact[0], "location_type": "stop", "access_mode": None, "access_distance_km": 0.0}
+
     hits = search_stops(value, limit=5)
+    if len(hits) == 1:
+        sid = hits[0]["stop_id"]
+        return {"stop_id": sid, "location_type": "stop", "access_mode": None, "access_distance_km": 0.0}
+
+    geocode = geocode_place(value)
+    if geocode is not None:
+        nearest = nearest_stop_for_coordinates(geocode["latitude"], geocode["longitude"])
+        if nearest is not None:
+            dist = nearest["distance_km"]
+            if dist < 1.0:
+                access_mode = "walk"
+            elif dist <= 5.0:
+                access_mode = "auto"
+            else:
+                access_mode = "cab"
+            return {
+                "stop_id": nearest["stop_id"],
+                "location_type": "geocoded",
+                "access_mode": access_mode,
+                "access_distance_km": round(dist, 2),
+                "source_query": value,
+                "display_name": geocode.get("display_name", value),
+                "access_latitude": geocode["latitude"],
+                "access_longitude": geocode["longitude"],
+            }
+
     hint = ", ".join(f"{h['stop_name']} ({h['stop_id']})" for h in hits)
     raise ValueError(f"Unknown stop '{value}'." + (f" Did you mean: {hint}?" if hint else ""))
 
@@ -261,6 +354,129 @@ def _evaluate(path: list) -> dict:
     }
 
 
+def _access_leg(meta: dict, stop_id: str, endpoint: str) -> tuple[dict, dict] | None:
+    mode = meta.get("access_mode")
+    if meta.get("location_type") != "geocoded" or mode not in ("walk", "auto", "cab"):
+        return None
+
+    distance = float(meta["access_distance_km"])
+    place_id = f"__place_{endpoint}__"
+    stop_name = STOPS[stop_id]["stop_name"]
+    place_name = meta.get("source_query") or meta.get("display_name") or "Your destination"
+    is_origin = endpoint == "start"
+    from_stop, to_stop = (place_id, stop_id) if is_origin else (stop_id, place_id)
+    from_name, to_name = (place_name, stop_name) if is_origin else (stop_name, place_name)
+    speed_kmh = {"walk": 5.0, "auto": 18.0, "cab": 25.0}[mode]
+    travel_time = distance / speed_kmh * 60.0
+    wait_time = 0.0 if mode == "walk" else BOARDING_WAIT_MIN[mode]
+    fare = calc_segment_fare(mode, distance)
+    place = {
+        "stop_id": place_id,
+        "stop_name": place_name,
+        "area": "Place",
+        "latitude": float(meta["access_latitude"]),
+        "longitude": float(meta["access_longitude"]),
+        "is_place": True,
+    }
+    segment = {
+        "transport_type": mode,
+        "mode_label": MODE_LABEL[mode],
+        "route_id": None,
+        "route_name": f"Last-mile {MODE_LABEL[mode].lower()}",
+        "from_stop": from_stop,
+        "from_name": from_name,
+        "to_stop": to_stop,
+        "to_name": to_name,
+        "num_stops": 1,
+        "distance_km": round(distance, 2),
+        "time_min": round(travel_time, 2),
+        "wait_min": wait_time,
+        "fare_inr": round(fare, 2),
+        "shares_ticket_with_previous": False,
+        "access_leg": True,
+        "access_direction": endpoint,
+    }
+    leg = {
+        "from_stop": from_stop,
+        "from_name": from_name,
+        "to_stop": to_stop,
+        "to_name": to_name,
+        "transport_type": mode,
+        "route_id": None,
+        "time_min": segment["time_min"],
+        "distance_km": segment["distance_km"],
+        "fare_inr": segment["fare_inr"],
+    }
+    return segment, {"leg": leg, "place": place}
+
+
+def _add_access_legs(journey: dict, start_meta: dict, dest_meta: dict, start: str, destination: str) -> dict:
+    start_access = _access_leg(start_meta, start, "start")
+    dest_access = _access_leg(dest_meta, destination, "destination")
+    accesses = [("start", start_access), ("destination", dest_access)]
+    accesses = [(direction, access) for direction, access in accesses if access is not None]
+    if not accesses:
+        return journey
+
+    start_segment = next((segment for direction, (segment, _) in accesses if direction == "start"), None)
+    dest_segment = next((segment for direction, (segment, _) in accesses if direction == "destination"), None)
+    start_details = next((details for direction, (_, details) in accesses if direction == "start"), None)
+    dest_details = next((details for direction, (_, details) in accesses if direction == "destination"), None)
+
+    journey["segments"] = ([start_segment] if start_segment else []) + journey["segments"] + ([dest_segment] if dest_segment else [])
+    journey["legs"] = ([start_details["leg"]] if start_details else []) + journey["legs"] + ([dest_details["leg"]] if dest_details else [])
+    if start_details:
+        journey["stops"].insert(0, start_details["place"])
+    if dest_details:
+        journey["stops"].append(dest_details["place"])
+
+    for segment in (start_segment, dest_segment):
+        if segment is None:
+            continue
+        journey["total_time_min"] += segment["time_min"] + segment["wait_min"]
+        journey["in_vehicle_time_min"] += segment["time_min"]
+        journey["wait_time_min"] += segment["wait_min"]
+        journey["total_fare_inr"] += segment["fare_inr"]
+        journey["total_distance_km"] += segment["distance_km"]
+        if segment["transport_type"] == "walk":
+            journey["walking_distance_km"] += segment["distance_km"]
+
+    for key in ("total_time_min", "in_vehicle_time_min", "wait_time_min", "total_fare_inr",
+                "total_distance_km", "walking_distance_km"):
+        journey[key] = round(journey[key], 2)
+    journey["modes_used"] = list(dict.fromkeys(segment["transport_type"] for segment in journey["segments"]))
+    journey["mode_changes"] = sum(
+        first["transport_type"] != second["transport_type"]
+        for first, second in zip(journey["segments"], journey["segments"][1:])
+    )
+    journey["transfers"] = max(0, sum(segment["transport_type"] != "walk" for segment in journey["segments"]) - 1)
+    return journey
+
+
+def _empty_journey(stop_id: str) -> dict:
+    return {
+        "segments": [], "legs": [], "stops": [stop_info(stop_id)], "modes_used": [],
+        "total_time_min": 0.0, "in_vehicle_time_min": 0.0, "wait_time_min": 0.0,
+        "total_fare_inr": 0.0, "total_distance_km": 0.0, "walking_distance_km": 0.0,
+        "transfers": 0, "mode_changes": 0, "_hops": set(), "_signature": (),
+    }
+
+
+def _resolved_endpoint(meta: dict, stop_id: str, endpoint: str) -> dict:
+    result = stop_info(stop_id)
+    if meta.get("location_type") == "geocoded":
+        result.update({
+            "access_mode": meta.get("access_mode"),
+            "access_distance_km": meta.get("access_distance_km"),
+            "access_query": meta.get("source_query"),
+            "access_display_name": meta.get("display_name"),
+            "access_place_id": f"__place_{endpoint}__",
+            "access_latitude": meta.get("access_latitude"),
+            "access_longitude": meta.get("access_longitude"),
+        })
+    return result
+
+
 # --------------------------------------------------------------------------
 # ML integration
 # --------------------------------------------------------------------------
@@ -366,25 +582,35 @@ def plan_journeys(start: str, destination: str, preference: str = "balanced",
         raise ValueError("departure_hour must be between 0 and 23")
     if not 1 <= int(max_options) <= 5:
         raise ValueError("max_options must be between 1 and 5")
-    start, destination = resolve_stop(start), resolve_stop(destination)
+    start_meta = resolve_location(start)
+    dest_meta = resolve_location(destination)
+    start, destination = start_meta["stop_id"], dest_meta["stop_id"]
     if start == destination:
-        raise ValueError("Start and destination must be different stops")
+        if not start_meta.get("access_mode") and not dest_meta.get("access_mode"):
+            raise ValueError("Start and destination must be different stops")
 
     src, dst = ("S", start), ("S", destination)
     seen, pool = set(), []
-    for weight in ("w_time", "w_fare", "w_walk", "w_xfer"):
-        try:
-            gen = nx.shortest_simple_paths(GRAPH, src, dst, weight=weight)
-            for path in itertools.islice(gen, CANDIDATES_PER_CRITERION):
-                j = _evaluate(path)
-                if j["_signature"] not in seen:
-                    seen.add(j["_signature"])
-                    pool.append(j)
-        except nx.NetworkXNoPath:
-            break
+    if start == destination:
+        pool = [_empty_journey(start)]
+    else:
+        for weight in ("w_time", "w_fare", "w_walk", "w_xfer"):
+            try:
+                gen = nx.shortest_simple_paths(GRAPH, src, dst, weight=weight)
+                for path in itertools.islice(gen, CANDIDATES_PER_CRITERION):
+                    j = _evaluate(path)
+                    if j["_signature"] not in seen:
+                        seen.add(j["_signature"])
+                        pool.append(j)
+            except nx.NetworkXNoPath:
+                break
+
+    for journey in pool:
+        _add_access_legs(journey, start_meta, dest_meta, start, destination)
 
     if not pool:
-        return {"start": stop_info(start), "destination": stop_info(destination),
+        return {"start": _resolved_endpoint(start_meta, start, "start"),
+            "destination": _resolved_endpoint(dest_meta, destination, "destination"),
                 "preference": preference, "options": [], "candidates_considered": 0}
 
     ml_warning = None
@@ -410,7 +636,8 @@ def plan_journeys(start: str, destination: str, preference: str = "balanced",
         _CACHE.popitem(last=False)
 
     result = {
-        "start": stop_info(start), "destination": stop_info(destination),
+        "start": _resolved_endpoint(start_meta, start, "start"),
+        "destination": _resolved_endpoint(dest_meta, destination, "destination"),
         "preference": preference, "departure_hour": int(departure_hour), "day_type": day_type,
         "ml_enhanced": ml_enhanced and ml_warning is None,
         "model_used": model_type if ml_enhanced and ml_warning is None else None,

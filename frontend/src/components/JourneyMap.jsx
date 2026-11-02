@@ -10,7 +10,10 @@ const PAD = 30;
  * journey drawn on top in its mode colours. Pure SVG, no tiles, works offline.
  */
 export default function JourneyMap({ stops, option, startId, destId }) {
-  const byId = useMemo(() => Object.fromEntries(stops.map((s) => [s.stop_id, s])), [stops]);
+  const byId = useMemo(
+    () => Object.fromEntries([...stops, ...(option?.stops || [])].map((s) => [s.stop_id, s])),
+    [stops, option],
+  );
 
   const focus = useMemo(() => {
     const ids = option ? option.stops.map((s) => s.stop_id) : [startId, destId].filter(Boolean);
@@ -61,7 +64,12 @@ export default function JourneyMap({ stops, option, startId, destId }) {
       })()
     : [];
 
-  const changeStops = option ? option.segments.slice(1).map((s) => byId[s.from_stop]).filter(Boolean) : [];
+  const changeStops = option
+    ? option.segments.slice(1)
+      .filter((segment, i) => !segment.access_leg && !option.segments[i].access_leg)
+      .map((s) => byId[s.from_stop])
+      .filter(Boolean)
+    : [];
 
   return (
     <figure className="map">

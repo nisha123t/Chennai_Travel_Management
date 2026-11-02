@@ -1,4 +1,5 @@
 import { useId, useMemo, useRef, useState } from "react";
+import { api } from "../api.js";
 import { mode } from "../modes.js";
 
 function matchStops(stops, query) {
@@ -18,7 +19,7 @@ function matchStops(stops, query) {
   return scored.slice(0, 8).map((x) => x[2]);
 }
 
-export default function StopPicker({ label, stops, value, onChange, dotColor }) {
+export default function StopPicker({ label, stops, value, onChange, onQueryChange, dotColor }) {
   const id = useId();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -27,19 +28,42 @@ export default function StopPicker({ label, stops, value, onChange, dotColor }) 
 
   const selected = stops.find((s) => s.stop_id === value);
   const results = useMemo(() => matchStops(stops, query), [stops, query]);
+  const displayQuery = query || (selected && !open ? selected.stop_name : "");
 
   const choose = (s) => {
-    onChange(s.stop_id);
-    setQuery("");
+    onChange(s.stop_id, s.stop_name);
+    onQueryChange?.(s.stop_name);
+    setQuery((current) => current || s.stop_name);
     setOpen(false);
     inputRef.current?.blur();
   };
 
-  const onKeyDown = (e) => {
+  const onKeyDown = async (e) => {
     if (!open && (e.key === "ArrowDown" || e.key === "Enter")) return setOpen(true);
     if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => Math.min(a + 1, results.length - 1)); }
     else if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); }
-    else if (e.key === "Enter" && results[active]) { e.preventDefault(); choose(results[active]); }
+    else if (e.key === "Enter") {
+      if (results[active]) {
+        e.preventDefault();
+        choose(results[active]);
+        return;
+      }
+      const trimmed = query.trim();
+      if (!trimmed) return;
+      try {
+        const resolved = await api.resolveStop(trimmed);
+        if (resolved?.stop_id) {
+          e.preventDefault();
+          onChange(resolved.stop_id, trimmed);
+          onQueryChange?.(trimmed);
+          setQuery(trimmed);
+          setOpen(false);
+          inputRef.current?.blur();
+        }
+      } catch {
+        // keep the existing no-match feedback if geocoding fails
+      }
+    }
     else if (e.key === "Escape") setOpen(false);
   };
 
@@ -59,13 +83,17 @@ export default function StopPicker({ label, stops, value, onChange, dotColor }) 
         aria-autocomplete="list"
         autoComplete="off"
         placeholder="Search a station or bus stop"
-        value={open ? query : selected ? selected.stop_name : ""}
+        value={displayQuery}
         onFocus={() => { setOpen(true); setActive(0); }}
         onBlur={() => setTimeout(() => setOpen(false), 120)}
-        onChange={(e) => { setQuery(e.target.value); setActive(0); setOpen(true); }}
+        onChange={(e) => { setQuery(e.target.value); onQueryChange?.(e.target.value); setActive(0); setOpen(true); }}
         onKeyDown={onKeyDown}
       />
-      {selected && !open && <div className="picker-area">{selected.area}</div>}
+      {selected && !open && (
+        <div className="picker-area">
+          {query.trim() ? `Nearest stop: ${selected.stop_name}` : selected.area}
+        </div>
+      )}
       {open && (
         <ul id={`${id}-list`} className="picker-list" role="listbox">
           {results.length === 0 && <li className="picker-empty">No stop matches “{query}”. Try part of the name or the area.</li>}
